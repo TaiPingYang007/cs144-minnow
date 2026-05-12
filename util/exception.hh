@@ -47,18 +47,6 @@ inline T* notnull( const std::string_view context, T* const x )
   return x ? x : throw std::runtime_error( std::string( context ) + ": returned null pointer" );
 }
 
-template<typename T>
-inline std::unique_ptr<T> notnull( const std::string_view context, std::unique_ptr<T> x )
-{
-  return x ? x : throw std::runtime_error( std::string( context ) + ": returned null pointer" );
-}
-
-template<typename T>
-inline std::shared_ptr<T> notnull( const std::string_view context, std::shared_ptr<T> x )
-{
-  return x ? x : throw std::runtime_error( std::string( context ) + ": returned null pointer" );
-}
-
 inline std::string demangle( const char* name )
 {
   int status {};

@@ -2,9 +2,11 @@
 
 #include "exception.hh"
 
+#include <algorithm>
 #include <fcntl.h>
 #include <iostream>
 #include <stdexcept>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/uio.h>
 #include <unistd.h>
@@ -26,7 +28,7 @@ T FileDescriptor::FDWrapper::CheckSystemCall( string_view s_attempt, T return_va
 }
 
 template<typename T>
-T FileDescriptor::CheckSystemCall( string_view s_attempt, T return_value ) const
+T FileDescriptor::CheckSystemCall( std::string_view s_attempt, T return_value ) const
 {
   if ( not internal_fd_ ) {
     throw runtime_error( "internal error: missing internal_fd_" );
@@ -60,7 +62,7 @@ FileDescriptor::FDWrapper::~FDWrapper()
     close();
   } catch ( const exception& e ) {
     // don't throw an exception from the destructor
-    cerr << "Exception destructing FDWrapper: " << e.what() << "\n";
+    cerr << "Exception destructing FDWrapper: " << e.what() << endl;
   }
 }
 
@@ -80,14 +82,12 @@ FileDescriptor FileDescriptor::duplicate() const
 // buffer is the string to be read into
 void FileDescriptor::read( string& buffer )
 {
-  if ( buffer.empty() ) {
-    buffer.resize( kReadBufferSize );
-  }
+  buffer.clear();
+  buffer.resize( kReadBufferSize );
 
   const ssize_t bytes_read = ::read( fd_num(), buffer.data(), buffer.size() );
   if ( bytes_read < 0 ) {
     if ( internal_fd_->non_blocking_ and ( errno == EAGAIN or errno == EINPROGRESS ) ) {
-      buffer.clear();
       return;
     }
     throw unix_error { "read" };
@@ -106,27 +106,26 @@ void FileDescriptor::read( string& buffer )
   buffer.resize( bytes_read );
 }
 
-void FileDescriptor::read( vector<string>& buffers )
+void FileDescriptor::read( vector<unique_ptr<string>>& buffers )
 {
   if ( buffers.empty() ) {
     return;
   }
 
-  buffers.back().clear();
-  buffers.back().resize( kReadBufferSize );
+  buffers.back()->clear();
+  buffers.back()->resize( kReadBufferSize );
 
   vector<iovec> iovecs;
   iovecs.reserve( buffers.size() );
   size_t total_size = 0;
   for ( const auto& x : buffers ) {
-    iovecs.push_back( { const_cast<char*>( x.data() ), x.size() } ); // NOLINT(*-const-cast)
-    total_size += x.size();
+    iovecs.push_back( { const_cast<char*>( x->data() ), x->size() } ); // NOLINT(*-const-cast)
+    total_size += x->size();
   }
 
   const ssize_t bytes_read = ::readv( fd_num(), iovecs.data(), static_cast<int>( iovecs.size() ) );
   if ( bytes_read < 0 ) {
     if ( internal_fd_->non_blocking_ and ( errno == EAGAIN or errno == EINPROGRESS ) ) {
-      buffers.clear();
       return;
     }
     throw unix_error { "read" };
@@ -140,10 +139,12 @@ void FileDescriptor::read( vector<string>& buffers )
 
   size_t remaining_size = bytes_read;
   for ( auto& buf : buffers ) {
-    if ( remaining_size >= buf.size() ) {
-      remaining_size -= buf.size();
+    if ( remaining_size <= buf->size() ) {
+      remaining_size -= buf->size();
+    } else if ( remaining_size == 0 ) {
+      buf->clear();
     } else {
-      buf.resize( remaining_size );
+      buf->resize( remaining_size );
       remaining_size = 0;
     }
   }
@@ -152,16 +153,6 @@ void FileDescriptor::read( vector<string>& buffers )
 size_t FileDescriptor::write( string_view buffer )
 {
   return write( vector<string_view> { buffer } );
-}
-
-size_t FileDescriptor::write( const vector<Ref<string>>& buffers )
-{
-  vector<string_view> views;
-  views.reserve( buffers.size() );
-  for ( const auto& x : buffers ) {
-    views.emplace_back( x.get() );
-  }
-  return write( views );
 }
 
 size_t FileDescriptor::write( const vector<string_view>& buffers )

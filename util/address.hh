@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <netdb.h>
+#include <netinet/in.h>
+#include <stdexcept>
 #include <string>
 #include <sys/socket.h>
 #include <utility>
@@ -67,7 +69,7 @@ public:
   //! Size of the underlying address storage.
   socklen_t size() const { return _size; }
   //! Const pointer to the underlying socket address storage.
-  const sockaddr* raw() const { return static_cast<const sockaddr*>( _address ); }
+  operator const sockaddr*() const { return static_cast<const sockaddr*>( _address ); } // NOLINT(*-explicit-*)
   //! Safely convert to underlying sockaddr type
   template<typename sockaddr_type>
   const sockaddr_type* as() const;

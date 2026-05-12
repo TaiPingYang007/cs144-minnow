@@ -2,13 +2,13 @@
 
 #include "exception.hh"
 
+#include <arpa/inet.h>
 #include <array>
 #include <cstring>
 #include <linux/if_packet.h>
 #include <memory>
 #include <netdb.h>
 #include <stdexcept>
-#include <sys/socket.h>
 #include <system_error>
 
 using namespace std;
@@ -80,7 +80,7 @@ Address::Address( const string& node, const string& service, const addrinfo& hin
 //! \param[in] ai_flags is the value of the `ai_flags` field in the [struct addrinfo](\ref man3::getaddrinfo)
 //! \param[in] ai_family is the value of the `ai_family` field in the [struct addrinfo](\ref
 //! man3::getaddrinfo)
-inline addrinfo make_hints( int ai_flags, int ai_family ) // NOLINT(*-swappable-parameters)
+static inline addrinfo make_hints( int ai_flags, int ai_family ) // NOLINT(*-swappable-parameters)
 {
   addrinfo hints {}; // value initialized to all zeros
   hints.ai_flags = ai_flags;
@@ -104,10 +104,6 @@ Address::Address( const string& ip, const uint16_t port )
 // accessors
 pair<string, uint16_t> Address::ip_port() const
 {
-  if ( _address.storage.ss_family != AF_INET and _address.storage.ss_family != AF_INET6 ) {
-    throw runtime_error( "Address::ip_port() called on non-Internet address" );
-  }
-
   array<char, NI_MAXHOST> ip {};
   array<char, NI_MAXSERV> port {};
 
@@ -127,12 +123,8 @@ pair<string, uint16_t> Address::ip_port() const
 
 string Address::to_string() const
 {
-  if ( _address.storage.ss_family == AF_INET or _address.storage.ss_family == AF_INET6 ) {
-    const auto ip_and_port = ip_port();
-    return ip_and_port.first + ":" + ::to_string( ip_and_port.second );
-  }
-
-  return "(non-Internet address)";
+  const auto ip_and_port = ip_port();
+  return ip_and_port.first + ":" + ::to_string( ip_and_port.second );
 }
 
 uint32_t Address::ipv4_numeric() const
@@ -185,7 +177,7 @@ const sockaddr_type* Address::as() const
 {
   const sockaddr* raw { _address };
   if ( sizeof( sockaddr_type ) < size() or raw->sa_family != sockaddr_family<sockaddr_type> ) {
-    throw runtime_error( "Address::as() conversion failure" );
+    throw std::runtime_error( "Address::as() conversion failure" );
   }
 
   return reinterpret_cast<const sockaddr_type*>( raw ); // NOLINT(*-reinterpret-cast)

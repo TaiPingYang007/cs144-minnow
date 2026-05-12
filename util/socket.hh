@@ -3,6 +3,7 @@
 #include "address.hh"
 #include "file_descriptor.hh"
 
+#include <cstdint>
 #include <functional>
 #include <sys/socket.h>
 
@@ -59,6 +60,8 @@ public:
 
 class DatagramSocket : public Socket
 {
+  using Socket::Socket;
+
 public:
   //! Receive a datagram and the Address of its sender
   void recv( Address& source_address, std::string& payload );
@@ -68,14 +71,6 @@ public:
 
   //! Send datagram to the socket's connected address (must call connect() first)
   void send( std::string_view payload );
-
-protected:
-  DatagramSocket( int domain, int type, int protocol = 0 ) : Socket( domain, type, protocol ) {}
-
-  //! Construct from a file descriptor.
-  DatagramSocket( FileDescriptor&& fd, int domain, int type, int protocol = 0 )
-    : Socket( std::move( fd ), domain, type, protocol )
-  {}
 };
 
 //! A wrapper around [UDP sockets](\ref man7::udp)
@@ -95,7 +90,7 @@ class TCPSocket : public Socket
 private:
   //! \brief Construct from FileDescriptor (used by accept())
   //! \param[in] fd is the FileDescriptor from which to construct
-  explicit TCPSocket( FileDescriptor&& fd ) : Socket( std::move( fd ), AF_INET, SOCK_STREAM, IPPROTO_TCP ) {}
+  explicit TCPSocket( FileDescriptor&& fd ) : Socket( std::move( fd ), AF_INET, SOCK_STREAM ) {}
 
 public:
   //! Default: construct an unbound, unconnected TCP socket
@@ -115,23 +110,4 @@ public:
   PacketSocket( const int type, const int protocol ) : DatagramSocket( AF_PACKET, type, protocol ) {}
 
   void set_promiscuous();
-};
-
-//! A wrapper around [Unix-domain stream sockets](\ref man7::unix)
-class LocalStreamSocket : public Socket
-{
-public:
-  //! Construct from a file descriptor
-  explicit LocalStreamSocket( FileDescriptor&& fd ) : Socket( std::move( fd ), AF_UNIX, SOCK_STREAM ) {}
-};
-
-//! A wrapper around [Unix-domain datagram sockets](\ref man7::unix)
-class LocalDatagramSocket : public DatagramSocket
-{
-  //! \param[in] fd is the FileDescriptor from which to construct
-  explicit LocalDatagramSocket( FileDescriptor&& fd ) : DatagramSocket( std::move( fd ), AF_UNIX, SOCK_DGRAM ) {}
-
-public:
-  //! Default: construct an unbound, unconnected socket
-  LocalDatagramSocket() : DatagramSocket( AF_UNIX, SOCK_DGRAM ) {}
 };
