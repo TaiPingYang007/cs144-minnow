@@ -2,7 +2,6 @@
 
 #include "parser.hh"
 
-#include <numeric>
 #include <ranges>
 #include <string>
 #include <vector>

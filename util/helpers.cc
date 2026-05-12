@@ -1,32 +1,27 @@
 #include "helpers.hh"
 
-#include <iomanip>
+#include <cctype>
+#include <sstream>
 
 using namespace std;
 
 string pretty_print( string_view str, size_t max_length )
 {
   ostringstream ss;
-  bool truncated = false;
-  for ( const uint8_t ch : str ) {
-    if ( ss.str().size() >= max_length ) {
-      truncated = true;
+  size_t shown = 0;
+  for ( unsigned char ch : str ) {
+    if ( shown >= max_length ) {
+      ss << "...";
       break;
     }
-
-    if ( isprint( ch ) and ch != '"' ) {
-      ss << ch;
+    if ( isprint( ch ) ) {
+      ss << static_cast<char>( ch );
     } else {
-      ss << "\\x" << fixed << setw( 2 ) << setfill( '0' ) << hex << static_cast<size_t>( ch );
+      ss << "\\x";
+      const char* hex = "0123456789ABCDEF";
+      ss << hex[( ch >> 4 ) & 0xF] << hex[ch & 0xF];
     }
+    ++shown;
   }
-  string ret = ss.str();
-  if ( truncated ) {
-    if ( ret.size() >= 3 ) {
-      ret.substr( ret.size() - 3, 3 ) = "...";
-    } else {
-      ret += "...";
-    }
-  }
-  return ret;
+  return ss.str();
 }
