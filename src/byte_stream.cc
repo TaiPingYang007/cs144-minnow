@@ -6,6 +6,7 @@ ByteStream::ByteStream( uint64_t capacity ) : capacity_( capacity ) {}
 
 void Writer::push( string data )
 {
+  // Your code here.
   uint64_t actual = min( static_cast<uint64_t>( data.size() ), available_capacity() );
   buffer_ += data.substr( 0, actual );
   bytes_pushed_ += actual;
@@ -38,6 +39,7 @@ string_view Reader::peek() const
 
 void Reader::pop( uint64_t len )
 {
+  // Your code here.
   uint64_t actual = min( len, static_cast<uint64_t>( buffer_.size() ) );
   buffer_.erase( 0, actual );
   bytes_popped_ += actual;
