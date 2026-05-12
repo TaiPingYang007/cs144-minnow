@@ -39,7 +39,7 @@ string_view Reader::peek() const
 
 void Reader::pop( uint64_t len )
 {
-  // Your code here.
+  // Your code here
   uint64_t actual = min( len, static_cast<uint64_t>( buffer_.size() ) );
   buffer_.erase( 0, actual );
   bytes_popped_ += actual;
