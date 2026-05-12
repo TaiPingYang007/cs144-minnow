@@ -1,0 +1,2468 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "byte_stream_stress_test.cc",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L1",
+      "id": "tests_byte_stream_stress_test_cc",
+      "community": 5,
+      "norm_label": "byte_stream_stress_test.cc"
+    },
+    {
+      "label": "stress_test()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L8",
+      "id": "tests_byte_stream_stress_test_stress_test",
+      "community": 5,
+      "norm_label": "stress_test()"
+    },
+    {
+      "label": "program_body()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L76",
+      "id": "tests_byte_stream_stress_test_program_body",
+      "community": 5,
+      "norm_label": "program_body()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L84",
+      "id": "tests_byte_stream_stress_test_main",
+      "community": 5,
+      "norm_label": "main()"
+    },
+    {
+      "label": "byte_stream_one_write.cc",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_one_write.cc",
+      "source_location": "L1",
+      "id": "tests_byte_stream_one_write_cc",
+      "community": 13,
+      "norm_label": "byte_stream_one_write.cc"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_one_write.cc",
+      "source_location": "L8",
+      "id": "tests_byte_stream_one_write_main",
+      "community": 13,
+      "norm_label": "main()"
+    },
+    {
+      "label": "byte_stream_capacity.cc",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_capacity.cc",
+      "source_location": "L1",
+      "id": "tests_byte_stream_capacity_cc",
+      "community": 14,
+      "norm_label": "byte_stream_capacity.cc"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_capacity.cc",
+      "source_location": "L8",
+      "id": "tests_byte_stream_capacity_main",
+      "community": 14,
+      "norm_label": "main()"
+    },
+    {
+      "label": "byte_stream_basics.cc",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_basics.cc",
+      "source_location": "L1",
+      "id": "tests_byte_stream_basics_cc",
+      "community": 11,
+      "norm_label": "byte_stream_basics.cc"
+    },
+    {
+      "label": "all_zeroes()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_basics.cc",
+      "source_location": "L8",
+      "id": "tests_byte_stream_basics_all_zeroes",
+      "community": 11,
+      "norm_label": "all_zeroes()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_basics.cc",
+      "source_location": "L16",
+      "id": "tests_byte_stream_basics_main",
+      "community": 11,
+      "norm_label": "main()"
+    },
+    {
+      "label": "no_skip.cc",
+      "file_type": "code",
+      "source_file": "tests/no_skip.cc",
+      "source_location": "L1",
+      "id": "tests_no_skip_cc",
+      "community": 15,
+      "norm_label": "no_skip.cc"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/no_skip.cc",
+      "source_location": "L5",
+      "id": "tests_no_skip_main",
+      "community": 15,
+      "norm_label": "main()"
+    },
+    {
+      "label": "common.cc",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L1",
+      "id": "tests_common_cc",
+      "community": 4,
+      "norm_label": "common.cc"
+    },
+    {
+      "label": "print_debug_messages()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L11",
+      "id": "tests_common_print_debug_messages",
+      "community": 4,
+      "norm_label": "print_debug_messages()"
+    },
+    {
+      "label": "diagnostic()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L34",
+      "id": "tests_common_diagnostic",
+      "community": 4,
+      "norm_label": "diagnostic()"
+    },
+    {
+      "label": "Printer()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L55",
+      "id": "tests_common_printer",
+      "community": 4,
+      "norm_label": "printer()"
+    },
+    {
+      "label": "with_color()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L57",
+      "id": "tests_common_with_color",
+      "community": 4,
+      "norm_label": "with_color()"
+    },
+    {
+      "label": "Timer::Timer()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L73",
+      "id": "tests_common_timer_timer",
+      "community": 4,
+      "norm_label": "timer::timer()"
+    },
+    {
+      "label": "throw_timeout()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L85",
+      "id": "tests_common_throw_timeout",
+      "community": 4,
+      "norm_label": "throw_timeout()"
+    },
+    {
+      "label": "Timeout()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L94",
+      "id": "tests_common_timeout",
+      "community": 4,
+      "norm_label": "timeout()"
+    },
+    {
+      "label": "make_timer()",
+      "file_type": "code",
+      "source_file": "tests/common.cc",
+      "source_location": "L107",
+      "id": "tests_common_make_timer",
+      "community": 4,
+      "norm_label": "make_timer()"
+    },
+    {
+      "label": "byte_stream_speed_test.cc",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L1",
+      "id": "tests_byte_stream_speed_test_cc",
+      "community": 9,
+      "norm_label": "byte_stream_speed_test.cc"
+    },
+    {
+      "label": "speed_test()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L14",
+      "id": "tests_byte_stream_speed_test_speed_test",
+      "community": 9,
+      "norm_label": "speed_test()"
+    },
+    {
+      "label": "program_body()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L91",
+      "id": "tests_byte_stream_speed_test_program_body",
+      "community": 9,
+      "norm_label": "program_body()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L101",
+      "id": "tests_byte_stream_speed_test_main",
+      "community": 9,
+      "norm_label": "main()"
+    },
+    {
+      "label": "byte_stream_two_writes.cc",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_two_writes.cc",
+      "source_location": "L1",
+      "id": "tests_byte_stream_two_writes_cc",
+      "community": 16,
+      "norm_label": "byte_stream_two_writes.cc"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_two_writes.cc",
+      "source_location": "L8",
+      "id": "tests_byte_stream_two_writes_main",
+      "community": 16,
+      "norm_label": "main()"
+    },
+    {
+      "label": "byte_stream_many_writes.cc",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_many_writes.cc",
+      "source_location": "L1",
+      "id": "tests_byte_stream_many_writes_cc",
+      "community": 10,
+      "norm_label": "byte_stream_many_writes.cc"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "tests/byte_stream_many_writes.cc",
+      "source_location": "L10",
+      "id": "tests_byte_stream_many_writes_main",
+      "community": 10,
+      "norm_label": "main()"
+    },
+    {
+      "label": "byte_stream_helpers.cc",
+      "file_type": "code",
+      "source_file": "src/byte_stream_helpers.cc",
+      "source_location": "L1",
+      "id": "src_byte_stream_helpers_cc",
+      "community": 17,
+      "norm_label": "byte_stream_helpers.cc"
+    },
+    {
+      "label": "read()",
+      "file_type": "code",
+      "source_file": "src/byte_stream_helpers.cc",
+      "source_location": "L12",
+      "id": "src_byte_stream_helpers_read",
+      "community": 17,
+      "norm_label": "read()"
+    },
+    {
+      "label": "byte_stream.cc",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L1",
+      "id": "src_byte_stream_cc",
+      "community": 1,
+      "norm_label": "byte_stream.cc"
+    },
+    {
+      "label": "ByteStream()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L5",
+      "id": "src_byte_stream_bytestream",
+      "community": 1,
+      "norm_label": "bytestream()"
+    },
+    {
+      "label": "push()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L7",
+      "id": "src_byte_stream_push",
+      "community": 1,
+      "norm_label": "push()"
+    },
+    {
+      "label": "close()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L12",
+      "id": "src_byte_stream_close",
+      "community": 3,
+      "norm_label": "close()"
+    },
+    {
+      "label": "is_closed()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L17",
+      "id": "src_byte_stream_is_closed",
+      "community": 1,
+      "norm_label": "is_closed()"
+    },
+    {
+      "label": "available_capacity()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L22",
+      "id": "src_byte_stream_available_capacity",
+      "community": 1,
+      "norm_label": "available_capacity()"
+    },
+    {
+      "label": "bytes_pushed()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L27",
+      "id": "src_byte_stream_bytes_pushed",
+      "community": 1,
+      "norm_label": "bytes_pushed()"
+    },
+    {
+      "label": "peek()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L32",
+      "id": "src_byte_stream_peek",
+      "community": 1,
+      "norm_label": "peek()"
+    },
+    {
+      "label": "pop()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L37",
+      "id": "src_byte_stream_pop",
+      "community": 1,
+      "norm_label": "pop()"
+    },
+    {
+      "label": "is_finished()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L42",
+      "id": "src_byte_stream_is_finished",
+      "community": 1,
+      "norm_label": "is_finished()"
+    },
+    {
+      "label": "bytes_buffered()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L47",
+      "id": "src_byte_stream_bytes_buffered",
+      "community": 1,
+      "norm_label": "bytes_buffered()"
+    },
+    {
+      "label": "bytes_popped()",
+      "file_type": "code",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L52",
+      "id": "src_byte_stream_bytes_popped",
+      "community": 1,
+      "norm_label": "bytes_popped()"
+    },
+    {
+      "label": "socket.cc",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L1",
+      "id": "util_socket_cc",
+      "community": 0,
+      "norm_label": "socket.cc"
+    },
+    {
+      "label": "Socket()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L13",
+      "id": "util_socket_socket",
+      "community": 5,
+      "norm_label": "socket()"
+    },
+    {
+      "label": "get_address()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L51",
+      "id": "util_socket_get_address",
+      "community": 0,
+      "norm_label": "get_address()"
+    },
+    {
+      "label": "local_address()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L63",
+      "id": "util_socket_local_address",
+      "community": 0,
+      "norm_label": "local_address()"
+    },
+    {
+      "label": "peer_address()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L69",
+      "id": "util_socket_peer_address",
+      "community": 0,
+      "norm_label": "peer_address()"
+    },
+    {
+      "label": "bind()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L76",
+      "id": "util_socket_bind",
+      "community": 0,
+      "norm_label": "bind()"
+    },
+    {
+      "label": "bind_to_device()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L81",
+      "id": "util_socket_bind_to_device",
+      "community": 0,
+      "norm_label": "bind_to_device()"
+    },
+    {
+      "label": "connect()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L88",
+      "id": "util_socket_connect",
+      "community": 0,
+      "norm_label": "connect()"
+    },
+    {
+      "label": "shutdown()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L95",
+      "id": "util_socket_shutdown",
+      "community": 0,
+      "norm_label": "shutdown()"
+    },
+    {
+      "label": "recv()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L115",
+      "id": "util_socket_recv",
+      "community": 0,
+      "norm_label": "recv()"
+    },
+    {
+      "label": "sendto()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L137",
+      "id": "util_socket_sendto",
+      "community": 0,
+      "norm_label": "sendto()"
+    },
+    {
+      "label": "send()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L144",
+      "id": "util_socket_send",
+      "community": 0,
+      "norm_label": "send()"
+    },
+    {
+      "label": "listen()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L152",
+      "id": "util_socket_listen",
+      "community": 0,
+      "norm_label": "listen()"
+    },
+    {
+      "label": "accept()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L160",
+      "id": "util_socket_accept",
+      "community": 0,
+      "norm_label": "accept()"
+    },
+    {
+      "label": "getsockopt()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L168",
+      "id": "util_socket_getsockopt",
+      "community": 5,
+      "norm_label": "getsockopt()"
+    },
+    {
+      "label": "setsockopt()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L181",
+      "id": "util_socket_setsockopt",
+      "community": 0,
+      "norm_label": "setsockopt()"
+    },
+    {
+      "label": "set_reuseaddr()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L194",
+      "id": "util_socket_set_reuseaddr",
+      "community": 0,
+      "norm_label": "set_reuseaddr()"
+    },
+    {
+      "label": "throw_if_error()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L199",
+      "id": "util_socket_throw_if_error",
+      "community": 5,
+      "norm_label": "throw_if_error()"
+    },
+    {
+      "label": "set_promiscuous()",
+      "file_type": "code",
+      "source_file": "util/socket.cc",
+      "source_location": "L212",
+      "id": "util_socket_set_promiscuous",
+      "community": 0,
+      "norm_label": "set_promiscuous()"
+    },
+    {
+      "label": "random.cc",
+      "file_type": "code",
+      "source_file": "util/random.cc",
+      "source_location": "L1",
+      "id": "util_random_cc",
+      "community": 10,
+      "norm_label": "random.cc"
+    },
+    {
+      "label": "get_random_engine()",
+      "file_type": "code",
+      "source_file": "util/random.cc",
+      "source_location": "L8",
+      "id": "util_random_get_random_engine",
+      "community": 10,
+      "norm_label": "get_random_engine()"
+    },
+    {
+      "label": "file_descriptor.cc",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L1",
+      "id": "util_file_descriptor_cc",
+      "community": 3,
+      "norm_label": "file_descriptor.cc"
+    },
+    {
+      "label": "FDWrapper::CheckSystemCall()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L15",
+      "id": "util_file_descriptor_fdwrapper_checksystemcall",
+      "community": 3,
+      "norm_label": "fdwrapper::checksystemcall()"
+    },
+    {
+      "label": "CheckSystemCall()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L29",
+      "id": "util_file_descriptor_checksystemcall",
+      "community": 0,
+      "norm_label": "checksystemcall()"
+    },
+    {
+      "label": "FDWrapper::FDWrapper()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L38",
+      "id": "util_file_descriptor_fdwrapper_fdwrapper",
+      "community": 3,
+      "norm_label": "fdwrapper::fdwrapper()"
+    },
+    {
+      "label": "FDWrapper::close()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L48",
+      "id": "util_file_descriptor_fdwrapper_close",
+      "community": 3,
+      "norm_label": "fdwrapper::close()"
+    },
+    {
+      "label": "FileDescriptor()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L68",
+      "id": "util_file_descriptor_filedescriptor",
+      "community": 3,
+      "norm_label": "filedescriptor()"
+    },
+    {
+      "label": "duplicate()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L75",
+      "id": "util_file_descriptor_duplicate",
+      "community": 3,
+      "norm_label": "duplicate()"
+    },
+    {
+      "label": "read()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L81",
+      "id": "util_file_descriptor_read",
+      "community": 3,
+      "norm_label": "read()"
+    },
+    {
+      "label": "write()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L152",
+      "id": "util_file_descriptor_write",
+      "community": 3,
+      "norm_label": "write()"
+    },
+    {
+      "label": "set_blocking()",
+      "file_type": "code",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L192",
+      "id": "util_file_descriptor_set_blocking",
+      "community": 3,
+      "norm_label": "set_blocking()"
+    },
+    {
+      "label": "helpers.cc",
+      "file_type": "code",
+      "source_file": "util/helpers.cc",
+      "source_location": "L1",
+      "id": "util_helpers_cc",
+      "community": 18,
+      "norm_label": "helpers.cc"
+    },
+    {
+      "label": "pretty_print()",
+      "file_type": "code",
+      "source_file": "util/helpers.cc",
+      "source_location": "L7",
+      "id": "util_helpers_pretty_print",
+      "community": 18,
+      "norm_label": "pretty_print()"
+    },
+    {
+      "label": "address.cc",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L1",
+      "id": "util_address_cc",
+      "community": 2,
+      "norm_label": "address.cc"
+    },
+    {
+      "label": "Raw::operator sockaddr*()()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L17",
+      "id": "util_address_raw_operator_sockaddr",
+      "community": 2,
+      "norm_label": "raw::operator sockaddr*()()"
+    },
+    {
+      "label": "Raw::operator const sockaddr*() const()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L23",
+      "id": "util_address_raw_operator_const_sockaddr_const",
+      "community": 2,
+      "norm_label": "raw::operator const sockaddr*() const()"
+    },
+    {
+      "label": "Address()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L30",
+      "id": "util_address_address",
+      "community": 2,
+      "norm_label": "address()"
+    },
+    {
+      "label": "gai_error_category",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L41",
+      "id": "util_address_gai_error_category",
+      "community": 2,
+      "norm_label": "gai_error_category"
+    },
+    {
+      "label": "make_hints()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L83",
+      "id": "util_address_make_hints",
+      "community": 2,
+      "norm_label": "make_hints()"
+    },
+    {
+      "label": "ip_port()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L105",
+      "id": "util_address_ip_port",
+      "community": 2,
+      "norm_label": "ip_port()"
+    },
+    {
+      "label": "to_string()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L128",
+      "id": "util_address_to_string",
+      "community": 5,
+      "norm_label": "to_string()"
+    },
+    {
+      "label": "ipv4_numeric()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L138",
+      "id": "util_address_ipv4_numeric",
+      "community": 2,
+      "norm_label": "ipv4_numeric()"
+    },
+    {
+      "label": "from_ipv4_numeric()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L150",
+      "id": "util_address_from_ipv4_numeric",
+      "community": 2,
+      "norm_label": "from_ipv4_numeric()"
+    },
+    {
+      "label": "operator==()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L160",
+      "id": "util_address_operator",
+      "community": 2,
+      "norm_label": "operator==()"
+    },
+    {
+      "label": "as()",
+      "file_type": "code",
+      "source_file": "util/address.cc",
+      "source_location": "L184",
+      "id": "util_address_as",
+      "community": 2,
+      "norm_label": "as()"
+    },
+    {
+      "label": "eventloop.cc",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L1",
+      "id": "util_eventloop_cc",
+      "community": 6,
+      "norm_label": "eventloop.cc"
+    },
+    {
+      "label": "FDRule::service_count()",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L10",
+      "id": "util_eventloop_fdrule_service_count",
+      "community": 6,
+      "norm_label": "fdrule::service_count()"
+    },
+    {
+      "label": "add_category()",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L15",
+      "id": "util_eventloop_add_category",
+      "community": 6,
+      "norm_label": "add_category()"
+    },
+    {
+      "label": "BasicRule::BasicRule()",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L25",
+      "id": "util_eventloop_basicrule_basicrule",
+      "community": 6,
+      "norm_label": "basicrule::basicrule()"
+    },
+    {
+      "label": "FDRule::FDRule()",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L29",
+      "id": "util_eventloop_fdrule_fdrule",
+      "community": 6,
+      "norm_label": "fdrule::fdrule()"
+    },
+    {
+      "label": "add_rule()",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L41",
+      "id": "util_eventloop_add_rule",
+      "community": 6,
+      "norm_label": "add_rule()"
+    },
+    {
+      "label": "RuleHandle::cancel()",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L72",
+      "id": "util_eventloop_rulehandle_cancel",
+      "community": 6,
+      "norm_label": "rulehandle::cancel()"
+    },
+    {
+      "label": "wait_next_event()",
+      "file_type": "code",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L82",
+      "id": "util_eventloop_wait_next_event",
+      "community": 5,
+      "norm_label": "wait_next_event()"
+    },
+    {
+      "label": "debug.cc",
+      "file_type": "code",
+      "source_file": "util/debug.cc",
+      "source_location": "L1",
+      "id": "util_debug_cc",
+      "community": 7,
+      "norm_label": "debug.cc"
+    },
+    {
+      "label": "default_debug_handler()",
+      "file_type": "code",
+      "source_file": "util/debug.cc",
+      "source_location": "L7",
+      "id": "util_debug_default_debug_handler",
+      "community": 7,
+      "norm_label": "default_debug_handler()"
+    },
+    {
+      "label": "debug_str()",
+      "file_type": "code",
+      "source_file": "util/debug.cc",
+      "source_location": "L17",
+      "id": "util_debug_debug_str",
+      "community": 7,
+      "norm_label": "debug_str()"
+    },
+    {
+      "label": "set_debug_handler()",
+      "file_type": "code",
+      "source_file": "util/debug.cc",
+      "source_location": "L22",
+      "id": "util_debug_set_debug_handler",
+      "community": 7,
+      "norm_label": "set_debug_handler()"
+    },
+    {
+      "label": "reset_debug_handler()",
+      "file_type": "code",
+      "source_file": "util/debug.cc",
+      "source_location": "L28",
+      "id": "util_debug_reset_debug_handler",
+      "community": 7,
+      "norm_label": "reset_debug_handler()"
+    },
+    {
+      "label": "bidirectional_stream_copy.cc",
+      "file_type": "code",
+      "source_file": "apps/bidirectional_stream_copy.cc",
+      "source_location": "L1",
+      "id": "apps_bidirectional_stream_copy_cc",
+      "community": 8,
+      "norm_label": "bidirectional_stream_copy.cc"
+    },
+    {
+      "label": "bidirectional_stream_copy()",
+      "file_type": "code",
+      "source_file": "apps/bidirectional_stream_copy.cc",
+      "source_location": "L11",
+      "id": "apps_bidirectional_stream_copy_bidirectional_stream_copy",
+      "community": 8,
+      "norm_label": "bidirectional_stream_copy()"
+    },
+    {
+      "label": "webget.cc",
+      "file_type": "code",
+      "source_file": "apps/webget.cc",
+      "source_location": "L1",
+      "id": "apps_webget_cc",
+      "community": 12,
+      "norm_label": "webget.cc"
+    },
+    {
+      "label": "get_URL()",
+      "file_type": "code",
+      "source_file": "apps/webget.cc",
+      "source_location": "L10",
+      "id": "apps_webget_get_url",
+      "community": 12,
+      "norm_label": "get_url()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "apps/webget.cc",
+      "source_location": "L16",
+      "id": "apps_webget_main",
+      "community": 12,
+      "norm_label": "main()"
+    },
+    {
+      "label": "tcp_native.cc",
+      "file_type": "code",
+      "source_file": "apps/tcp_native.cc",
+      "source_location": "L1",
+      "id": "apps_tcp_native_cc",
+      "community": 8,
+      "norm_label": "tcp_native.cc"
+    },
+    {
+      "label": "show_usage()",
+      "file_type": "code",
+      "source_file": "apps/tcp_native.cc",
+      "source_location": "L10",
+      "id": "apps_tcp_native_show_usage",
+      "community": 8,
+      "norm_label": "show_usage()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "apps/tcp_native.cc",
+      "source_location": "L16",
+      "id": "apps_tcp_native_main",
+      "community": 8,
+      "norm_label": "main()"
+    },
+    {
+      "label": "README_en.md",
+      "file_type": "document",
+      "source_file": "README_en.md",
+      "source_location": "L1",
+      "id": "readme_en_md",
+      "community": 19,
+      "norm_label": "readme_en.md"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "id": "readme_md",
+      "community": 20,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "check0.md",
+      "file_type": "document",
+      "source_file": "writeups/check0.md",
+      "source_location": "L1",
+      "id": "writeups_check0_md",
+      "community": 21,
+      "norm_label": "check0.md"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_byte_stream_stress_test_cc",
+      "target": "tests_byte_stream_stress_test_stress_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "tests_byte_stream_stress_test_cc",
+      "target": "tests_byte_stream_stress_test_program_body",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "tests_byte_stream_stress_test_cc",
+      "target": "tests_byte_stream_stress_test_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "tests_byte_stream_stress_test_program_body",
+      "target": "tests_byte_stream_stress_test_stress_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "tests_byte_stream_stress_test_stress_test",
+      "target": "util_address_to_string"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_stress_test.cc",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "tests_byte_stream_stress_test_main",
+      "target": "tests_byte_stream_stress_test_program_body",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_one_write.cc",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_byte_stream_one_write_cc",
+      "target": "tests_byte_stream_one_write_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_capacity.cc",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_byte_stream_capacity_cc",
+      "target": "tests_byte_stream_capacity_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_basics.cc",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_byte_stream_basics_cc",
+      "target": "tests_byte_stream_basics_all_zeroes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_basics.cc",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "tests_byte_stream_basics_cc",
+      "target": "tests_byte_stream_basics_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_basics.cc",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "tests_byte_stream_basics_main",
+      "target": "tests_byte_stream_basics_all_zeroes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/no_skip.cc",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "tests_no_skip_cc",
+      "target": "tests_no_skip_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_print_debug_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_diagnostic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_printer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_with_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_timer_timer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_throw_timeout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_timeout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L107",
+      "weight": 1.0,
+      "source": "tests_common_cc",
+      "target": "tests_common_make_timer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "tests_common_print_debug_messages",
+      "target": "tests_common_with_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "tests_common_diagnostic",
+      "target": "tests_common_print_debug_messages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/common.cc",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "tests_common_diagnostic",
+      "target": "tests_common_with_color",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/common.cc",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "tests_common_with_color",
+      "target": "util_address_to_string"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/common.cc",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "tests_common_timer_timer",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/common.cc",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "tests_common_timeout",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "tests_byte_stream_speed_test_cc",
+      "target": "tests_byte_stream_speed_test_speed_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "tests_byte_stream_speed_test_cc",
+      "target": "tests_byte_stream_speed_test_program_body",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "tests_byte_stream_speed_test_cc",
+      "target": "tests_byte_stream_speed_test_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "tests_byte_stream_speed_test_program_body",
+      "target": "tests_byte_stream_speed_test_speed_test",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "tests_byte_stream_speed_test_speed_test",
+      "target": "util_address_to_string"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_speed_test.cc",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "tests_byte_stream_speed_test_main",
+      "target": "tests_byte_stream_speed_test_program_body",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_two_writes.cc",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_byte_stream_two_writes_cc",
+      "target": "tests_byte_stream_two_writes_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/byte_stream_many_writes.cc",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "tests_byte_stream_many_writes_cc",
+      "target": "tests_byte_stream_many_writes_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/byte_stream_many_writes.cc",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "tests_byte_stream_many_writes_main",
+      "target": "util_random_get_random_engine"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream_helpers.cc",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "src_byte_stream_helpers_cc",
+      "target": "src_byte_stream_helpers_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_bytestream",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_push",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_is_closed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_available_capacity",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_bytes_pushed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_peek",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_pop",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_is_finished",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_bytes_buffered",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/byte_stream.cc",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "src_byte_stream_cc",
+      "target": "src_byte_stream_bytes_popped",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "util_file_descriptor_fdwrapper_fdwrapper",
+      "target": "src_byte_stream_close"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_socket",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_get_address",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_local_address",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L69",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_peer_address",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_bind",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_bind_to_device",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_connect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_shutdown",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_recv",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_sendto",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_send",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L152",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_listen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L160",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_accept",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_getsockopt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L187",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_setsockopt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_set_reuseaddr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_throw_if_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L212",
+      "weight": 1.0,
+      "source": "util_socket_cc",
+      "target": "util_socket_set_promiscuous",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "util_socket_socket",
+      "target": "util_socket_getsockopt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "util_socket_local_address",
+      "target": "util_socket_get_address",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "util_socket_peer_address",
+      "target": "util_socket_get_address",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "util_socket_get_address",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L216",
+      "weight": 1.0,
+      "source": "util_socket_set_promiscuous",
+      "target": "util_socket_local_address",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "util_socket_bind",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "util_socket_bind_to_device",
+      "target": "util_socket_setsockopt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "util_socket_connect",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "util_socket_shutdown",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L124",
+      "weight": 1.0,
+      "source": "util_socket_recv",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "util_socket_sendto",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "util_socket_send",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "util_socket_listen",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "util_socket_accept",
+      "target": "util_file_descriptor_filedescriptor"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L163",
+      "weight": 1.0,
+      "source": "util_socket_accept",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L202",
+      "weight": 1.0,
+      "source": "util_socket_throw_if_error",
+      "target": "util_socket_getsockopt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "util_socket_getsockopt",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/eventloop.cc",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "util_eventloop_wait_next_event",
+      "target": "util_socket_getsockopt"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "util_socket_set_reuseaddr",
+      "target": "util_socket_setsockopt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/socket.cc",
+      "source_location": "L214",
+      "weight": 1.0,
+      "source": "util_socket_set_promiscuous",
+      "target": "util_socket_setsockopt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L183",
+      "weight": 1.0,
+      "source": "util_socket_setsockopt",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/socket.cc",
+      "source_location": "L204",
+      "weight": 1.0,
+      "source": "util_socket_throw_if_error",
+      "target": "util_address_to_string"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/random.cc",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "util_random_cc",
+      "target": "util_random_get_random_engine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_fdwrapper_checksystemcall",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_checksystemcall",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_fdwrapper_fdwrapper",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_fdwrapper_close",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_filedescriptor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_duplicate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_read",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L167",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_write",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L192",
+      "weight": 1.0,
+      "source": "util_file_descriptor_cc",
+      "target": "util_file_descriptor_set_blocking",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "util_file_descriptor_fdwrapper_fdwrapper",
+      "target": "util_file_descriptor_checksystemcall",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "util_file_descriptor_fdwrapper_close",
+      "target": "util_file_descriptor_checksystemcall",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "util_file_descriptor_write",
+      "target": "util_file_descriptor_checksystemcall",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "util_file_descriptor_set_blocking",
+      "target": "util_file_descriptor_checksystemcall",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/eventloop.cc",
+      "source_location": "L162",
+      "weight": 1.0,
+      "source": "util_eventloop_wait_next_event",
+      "target": "util_file_descriptor_checksystemcall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/file_descriptor.cc",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "util_file_descriptor_fdwrapper_fdwrapper",
+      "target": "util_address_to_string"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/helpers.cc",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "util_helpers_cc",
+      "target": "util_helpers_pretty_print",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_raw_operator_sockaddr",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_raw_operator_const_sockaddr_const",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_address",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_gai_error_category",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_make_hints",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_ip_port",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_to_string",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_ipv4_numeric",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_from_ipv4_numeric",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L160",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_operator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L184",
+      "weight": 1.0,
+      "source": "util_address_cc",
+      "target": "util_address_as",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "util_address_address",
+      "target": "util_address_gai_error_category",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "util_address_ip_port",
+      "target": "util_address_gai_error_category",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "util/address.cc",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "util_address_to_string",
+      "target": "util_address_ip_port",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "util/eventloop.cc",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "util_eventloop_wait_next_event",
+      "target": "util_address_to_string"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "util_eventloop_cc",
+      "target": "util_eventloop_fdrule_service_count",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "util_eventloop_cc",
+      "target": "util_eventloop_add_category",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "util_eventloop_cc",
+      "target": "util_eventloop_basicrule_basicrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "util_eventloop_cc",
+      "target": "util_eventloop_fdrule_fdrule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "util_eventloop_cc",
+      "target": "util_eventloop_add_rule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "util_eventloop_cc",
+      "target": "util_eventloop_rulehandle_cancel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/eventloop.cc",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "util_eventloop_cc",
+      "target": "util_eventloop_wait_next_event",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/debug.cc",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "util_debug_cc",
+      "target": "util_debug_default_debug_handler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/debug.cc",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "util_debug_cc",
+      "target": "util_debug_debug_str",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/debug.cc",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "util_debug_cc",
+      "target": "util_debug_set_debug_handler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "util/debug.cc",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "util_debug_cc",
+      "target": "util_debug_reset_debug_handler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/bidirectional_stream_copy.cc",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "apps_bidirectional_stream_copy_cc",
+      "target": "apps_bidirectional_stream_copy_bidirectional_stream_copy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "apps/tcp_native.cc",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "apps_tcp_native_main",
+      "target": "apps_bidirectional_stream_copy_bidirectional_stream_copy"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/webget.cc",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "apps_webget_cc",
+      "target": "apps_webget_get_url",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/webget.cc",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "apps_webget_cc",
+      "target": "apps_webget_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/webget.cc",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "apps_webget_main",
+      "target": "apps_webget_get_url",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/tcp_native.cc",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "apps_tcp_native_cc",
+      "target": "apps_tcp_native_show_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/tcp_native.cc",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "apps_tcp_native_cc",
+      "target": "apps_tcp_native_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "apps/tcp_native.cc",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "apps_tcp_native_main",
+      "target": "apps_tcp_native_show_usage",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "9462423a445d1a13f3e417d3b0dad3831359216b"
+}
