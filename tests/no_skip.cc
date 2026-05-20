@@ -1,5 +1,7 @@
 #include "common.hh"
 
+#include <iostream>
+
 using namespace std;
 
 int main()

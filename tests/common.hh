@@ -3,7 +3,9 @@
 #include "conversions.hh"
 #include "exception.hh"
 
+#include <cstdlib>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <typeinfo>
@@ -50,6 +52,15 @@ struct TestStep
   virtual ~TestStep() = default;
 };
 
+inline std::optional<std::string> test_only()
+{
+  const char* value = std::getenv( "TEST_ONLY" );
+  if ( value == nullptr or std::string { value }.empty() ) {
+    return {};
+  }
+  return value;
+}
+
 class Printer
 {
   bool is_terminal_;
@@ -92,6 +103,12 @@ protected:
   const T& object() const { return obj_; }
 
 public:
+  bool skipped() const
+  {
+    const auto run_only = test_only();
+    return run_only.has_value() and run_only.value() != test_name_;
+  }
+
   void execute( const TestStep<T>& step )
   {
     try {
