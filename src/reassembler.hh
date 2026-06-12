@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include <map>
 
 class Reassembler
 {
@@ -32,4 +33,12 @@ public:
 
   // How many bytes are stored in the Reassembler itself?
   uint64_t bytes_pending() const;
+
+private:
+  // Reassembler 缓冲区：键=片段起始编号，值=该段字节。存"还不能按序写入"的乱序数据。
+  std::map<uint64_t, std::string> buffer_ {};
+  // 是否已收到 is_last_substring（参数会消失，用成员变量跨多次 insert 记住它）
+  bool eof_received_ {};
+  // 流的结束位置（收到 is_last 时记下：整条流的结束编号 = first_index + data.size()）
+  uint64_t eof_index_ {};
 };
