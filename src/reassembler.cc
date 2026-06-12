@@ -2,8 +2,6 @@
 
 using namespace std;
 
-namespace {}
-
 void Reassembler::insert( uint64_t first_index, string data, bool is_last_substring, Writer& output )
 {
   // 判断是不是已经结束了，如果已经结束了就直接丢弃
