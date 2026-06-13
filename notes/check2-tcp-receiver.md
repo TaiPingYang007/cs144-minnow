@@ -25,6 +25,88 @@
 - Day 4（2026-06-12）：阶段 0 + 阶段 1
 - Day 5：阶段 2 + 阶段 3（过 wrapping_integers 测试）
 - Day 6：阶段 4（过全部 recv 测试）
+- 实际：Day 5（06-13）一天打通阶段 2-4，官方 check2 30/30。
+
+---
+
+## ⭐ Check2 全貌总览（复习先看这一节）
+
+### 一句话定位
+
+> TCPReceiver 是接收端的「大门 + 翻译官」。`receive()` 把进来的 32 位报文翻译成
+> 拼图器认识的 64 位 stream_index 喂进去；`send()` 把"拼到哪了"翻译回 32 位 ackno 寄出去。
+> wrap/unwrap 只是这两个函数内部用的**翻译工具**，不是 check2 主体。
+
+### 角色表（认人）
+
+| 名字 | 类型 | 是什么 | 谁保管 |
+|------|------|--------|--------|
+| `isn_` | `optional<Wrap32>` | 存的 **ISN（原点）**，没收 SYN 时是空盒 | TCPReceiver 唯一成员 |
+| `message` | `TCPSenderMessage` | 收到的包：`seqno/SYN/payload/FIN`（**只有这 4 字段，无 ACK/RST**） | receive() 参数 |
+| `reassembler` | `Reassembler&` | check1 写的拼图器 | 外部传入（非成员） |
+| `inbound_stream` | `Writer&` | check0 写的字节水管 | 外部传入（非成员） |
+
+三套编号（核心）：
+- **seqno（32 位 Wrap32）**：网络上的，会回绕，起点 ISN，含 SYN/FIN
+- **absolute（64 位）**：内部中转坐标，起点 0，永不回绕，含 SYN/FIN
+- **stream_index（64 位）**：拼图器用的，起点 0，**不含 SYN/FIN，只数 payload 字节**
+
+### receive() 全流程
+
+```
+① if(message.SYN) isn_ = message.seqno;              // SYN 的 seqno 就是 ISN，记一次
+② if(!isn_.has_value()) return;                       // 没原点没法翻译，丢弃
+③ checkpoint = inbound_stream.bytes_pushed() + 1;     // 我大概在哪（误差±几无所谓，只定圈数）
+④ abs = message.seqno.unwrap(*isn_, checkpoint);      // 32→64：unwrap 入境翻译
+⑤ stream_index = abs + message.SYN - 1;               // 减去 SYN 占的 absolute 0（bool 当 0/1）
+⑥ reassembler.insert(stream_index, message.payload, message.FIN, inbound_stream);
+```
+
+### send() 全流程
+
+```
+window = min(available_capacity, UINT16_MAX);         // 封顶 65535，不能截断
+if(!isn_.has_value()) return {nullopt, window};       // 没 ISN：ackno 空（连接发起方第一个报文）
+abs_ackno = bytes_pushed() + 1 + (is_closed() ? 1 : 0);  // SYN占1 + 数据 + FIN占1(关流后)
+ackno = Wrap32::wrap(abs_ackno, *isn_);               // 64→32：wrap 出境翻译，加回 ISN
+return {ackno, window};
+```
+
+### 我反复问、终于搞懂的 7 个点（重点复习）
+
+1. **wrap/unwrap 不是「字节序」！** Wrap32 = 会回绕的 32 位序号，跟大小端毫无关系。
+2. **seqno 指向"包里第一个乘客"**：带 SYN 时是 SYN（=ISN）；否则是第一个数据字节。
+   它是单个编号（首字节序号），不是描述整包。等于 check1 的 `first_index`，只是 32 位会回绕版。
+3. **zero_point ≡ ISN**：只是 wrap/unwrap 的形参名（"原点"）。ISN 固定不变，存一次、来回都喂它。
+4. **unwrap 两参分工**：ISN 定"圈内位置(尾数)"= seqno−ISN；checkpoint 定"第几圈"。合起来=64 位。
+5. **SYN/FIN 都「占 absolute 序号、不占 stream_index、不是数据字节」**：
+   - SYN 占 absolute 0 → stream_index 公式那个 `−1`
+   - FIN 占 absolute 末尾 → ackno 那个 `+1`（要等 is_closed 才加）
+   - 两者完全对称：占号不占格。FIN 靠 insert 的 is_last_substring(bool) 进系统，无 stream_index。
+6. **ackno 必须 wrap 加回 ISN**：内部算的是 absolute（如 SYN 后 = 1），但发出去要翻成对方编号
+   = `wrap(1, ISN)` = ISN+1。只有 ISN=0 时才恰好=1。这就是真实 TCP 握手的 `ackno = 对方ISN+1`。
+7. **window 用 min 封顶不是 % 截断**：容量 65536 截断成 0 会撒谎（对方以为你满了）；
+   min 给 65535 是"我能收的比这多，但字段只能表达这么多"。顺序必须先 64 位 min 再转 uint16。
+
+### is_closed() 是什么
+
+不是 TCP 标志位，是本地 ByteStream 状态。因果链：对方发 FIN → receive 当 is_last 传给拼图器
+→ 拼图器拼完流尾调 close() → is_closed() 变 true。ackno 报"拼好的进度"，所以看它（事实），
+不看 message.FIN（声明）——FIN 乱序先到、前面有缺口时流没关，不能急着 +1。
+
+### 🧪 白纸自测清单（复习时盖住代码，能答出来才算真懂）
+
+口述/手写题（先答再对）：
+1. 画出 `SYN 'h' 'i' FIN` 的三套编号表（absolute / stream_index 两行）。
+2. 不看代码，默写 receive() 六步 + send() 全流程。
+3. receive() 里 `stream_index = abs + message.SYN - 1`，那个 `+SYN` 和 `-1` 各为什么？
+4. send() 里 `abs_ackno` 的两个 `+1` 各代表什么？为什么 FIN 那个要挂 `is_closed()`？
+5. ackno 为什么要 `wrap` 一下、不能直接返回绝对的 1？connect 1 和 connect 2 回的 ackno 为何不同？
+6. window 为什么用 `min` 而不是 `static_cast` 截断？为什么顺序是先 64 位 min 再转 16 位？
+7. unwrap 的 `zero_point` 和 `checkpoint` 各定 64 位答案的哪一部分？
+8. 没收到 SYN 时 send() 为什么 ackno=nullopt？这对应真实 TCP 的什么时刻？
+
+卡壳的题号 = 理解薄弱处，回到对应小节重看 + 重新推导（别背）。
 
 ---
 
