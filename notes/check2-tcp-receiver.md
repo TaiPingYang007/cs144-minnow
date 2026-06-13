@@ -15,9 +15,11 @@
 |------|------|----------------|------|
 | 0 | 网络世界的真相 | 为什么网络会丢包、乱序？为什么需要 TCP？ | ✅ 06-12 通关 |
 | 1 | TCP 的使命 + Minnow 全景 | TCP 承诺了什么？靠什么兑现？我写过的 check0/1 在其中是什么角色？ | ✅ 06-12 通关 |
-| 2 | 三套编号系统 | seqno / absolute seqno / stream index 分别是什么？为什么需要三套？ | 🔄 06-12 晚提前开场 |
+| 2 | 三套编号系统 | seqno / absolute seqno / stream index 分别是什么？为什么需要三套？ | ✅ 06-12 通关 |
 | 3 | 实现 wrap / unwrap | 32 位序号回绕怎么和 64 位互转？checkpoint 是干嘛的？ | ⬜ |
-| 4 | 实现 TCPReceiver | receive() 要做哪些判断？ackno / window_size 怎么算？ | ⬜ |
+| 4 | 实现 TCPReceiver | receive() 要做哪些判断？ackno / window_size 怎么算？ | ✅ 06-13 通关 |
+
+> **🏁 check2 全部通关：官方 check2 30/30（2026-06-13，Day 5 一天完成阶段 2-4）。**
 
 预期节奏（参考，以实际为准）：
 - Day 4（2026-06-12）：阶段 0 + 阶段 1
@@ -64,7 +66,7 @@
 
 >   1、承诺可靠传输，可以确保网络传输过程中按序、不丢、不漏、不重的一根“水管”。
     2、确认，序号，重传
-    3、check0 ByteStream 负责把数据写入缓冲区，共应用层读取，check1 Reassembler负责把传过来的乱序数据包进行排序，check2 TCPReceiver负责翻译序号+回执，翻译序号是把网络的32bit 序列号翻译成流序号64位的，回执就是告诉接收方哪些是确认接受的，这个确认接受的时机就是“push”
+    3、check0 ByteStream 负责把数据写入缓冲区，共应用层读取，check1 Reassembler负责把传过来的乱序数据包进行排序，check2 TCPReceiver负责翻译序号+回执，翻译序号是把网络的32bit 序列号翻译成流序号64位的，回执就是告诉发送方哪些是确认接受的，这个确认接受的时机就是“push”
     4、syn是三次握手里面的，fin是四次挥手吧，我们还没有这样的概念，其实我对于tcp的细节掌握的不好，现在的理解是syn第一个发来的数据包的标志，fin就是最后一次发来的数据包的标志
     5、我已经接受的多少和我这边还有多大的窗口
 
@@ -82,37 +84,134 @@
 
 我的回答（学完填写）：
 
->
+>   1、32位可以说是历史因素吧，这个不是我能决定的，32位最多位2^32-1，也就是4GB，这个范围在现在的网络传输中根本不够看，所以有回绕机制，当超出范围后可以重新从0开始继续编号，反复使用。所以需要 wrap/unwrap 翻译器一个是32位->64位，一个是64位->32位；为什么从随机值（ISN）开始？第一就是可以有一定的保护作用，如果没有这个随机值（ISN），那么序号就是从0开始，太容易暴露和太容易被攻击了，虽然我不知道怎么攻击，但是这样反正不安全，还有就是防止幽灵序号，比如这次的网络发送，因为网络传输太慢了，中间正好有一次重启，如果还是从0开始，那么自然就可能出现上一次，也就是重启前的数据，可能就被接受了，但是这是不需要的
+    2、这个我的理解是对于这样的关键的标志，也应该保证可靠传输，所以需要序号
+    3、传输“hi”，因为我写出来对应的名词，就凭感觉写了
+                syn     'h'     'i'     fin
+    seqno     isn+0   isn+1   isn+2   isn+3
+    绝对序号     0        1       2       3
+    流索引       -        0       1       -
 
 ---
 
-## 阶段 3：实现 wrap / unwrap
+## 阶段 3：实现 wrap / unwrap ✅ 06-13 通关（6/6 全绿）
 
 目标：完成 `src/wrapping_integers.cc`，通过全部 wrapping_integers 测试。
 
-- [ ] 理解 wrap 的钟表模型
-- [ ] 理解 unwrap 为什么需要 checkpoint
-- [ ] 实现 wrap 并通过测试
-- [ ] 实现 unwrap 并通过测试
+- [x] 理解 wrap 的钟表模型
+- [x] 理解 unwrap 为什么需要 checkpoint
+- [x] 实现 wrap 并通过测试
+- [x] 实现 unwrap 并通过测试
 
-踩坑记录：
+### wrap（简单）
 
->
+`wrap(n, zero_point) = zero_point + (n mod 2³²)`。代码：`return zero_point + static_cast<uint32_t>(n);`
+——把 uint64_t 强转成 uint32_t **就等于 % 2³²**（uint32 盒子只装得下低 32 位，高位整块自动砍掉）。
+
+### unwrap（难，调了 5 轮）
+
+三个参数对号入座：
+- `raw_value_`（this 对象的值）= 要翻译的 32 位 seqno
+- `zero_point.raw_value_` = ISN
+- `checkpoint` = 当前进度参照（实际传 bytes_pushed 附近）
+
+测试调用 `Wrap32(1).unwrap(Wrap32(0), 0)` 读法：点号**前**的 `Wrap32(1)` 才是被翻译的 seqno；
+括号里 `Wrap32(0)` 是 ISN，`0` 是 checkpoint。别把 ISN 当成被翻译的值。
+
+我的方法（数圈数）：`this_one = checkpoint / 2³²`，分三块互斥处理——
+① `cp_low >= offset`（比同圈/下圈）② `cp_low < offset && this_one!=0`（比同圈/上圈）
+③ `this_one==0`（比 offset 和 offset+2³²）。
+
+### 踩坑记录（全是同一类病：无符号减法方向写错→下溢）
+
+1. **lap 写错**：第二分支 diff2 用 last_one 算距离，赋值却写成 next_one → 答案差整整 2 圈。
+2. **last_one 下溢**：`this_one==0` 时 `this_one-1` 在 uint64 下溢成天文数字 → 必须单独拆出 this_one==0。
+3. **diff1 减法方向**：`checkpoint - candidate` 默认候选在下方；this_one==0 时候选(offset)常在上方
+   → 下溢。改成"谁大减谁"的绝对距离才对。
+4. **blanket return offset 太粗暴**：checkpoint 摸到圈顶时最近候选其实翻到下一圈（offset+2³²），
+   不能无脑返回 offset。
+5. **unwrap 纯粹挑最近，可前可后**：不假设"一定在 checkpoint 之后"——重传的旧数据 seqno
+   会落在 checkpoint 稍前，必须能选到它（误以为"只能往后"是错的）。
+
+### 🥋 学到的可复用招式：signed modular distance（有符号模距离）
+
+圆环上求"离参照点最近的代表元"，**别数圈数**——把无符号差强转成有符号，硬件免费算出"最短跳跃(带正负)"：
+```cpp
+uint32_t offset = raw_value_ - zero_point.raw_value_;
+uint32_t cp_low = static_cast<uint32_t>(checkpoint);
+int32_t  hop    = static_cast<int32_t>(offset - cp_low);   // ★ 一行搞定方向+距离
+int64_t  result = static_cast<int64_t>(checkpoint) + hop;
+if (result < 0) result += (1LL << 32);
+return result;
+```
+int32_t 范围恰好半圈，所以"差>半圈"自动解读为负（走近路），上面那 5 个坑**一次性全消失**。
+同款 idiom：Linux 内核 `time_after(a,b)` = `(int32_t)(b-a) < 0`；环形缓冲区；角度/罗盘回绕。
+（这次先用自己数圈数的版本过了；hop 版作为"成品招式"收进工具箱，下次遇到回绕+求最近直接调。）
 
 ---
 
-## 阶段 4：实现 TCPReceiver
+## 阶段 4：实现 TCPReceiver ✅ 06-13 通关（官方 check2 30/30）
 
 目标：完成 `src/tcp_receiver.cc`，通过全部 recv_* 测试。
 
-- [ ] 读懂 TCPSenderMessage / TCPReceiverMessage 两个结构体
-- [ ] 画出 receive() 的判断流程
-- [ ] 想清楚需要哪些成员变量
-- [ ] 实现 receive()
-- [ ] 实现 send()
-- [ ] 通过全部 check2 测试
+- [x] 读懂 TCPSenderMessage / TCPReceiverMessage 两个结构体
+- [x] 画出 receive() 的判断流程（骨架已成）
+- [x] 想清楚需要哪些成员变量（→ std::optional<Wrap32> isn_）
+- [x] 实现 receive()
+- [x] 实现 send()
+- [x] 通过全部 check2 测试（官方 check2 30/30）
 
-踩坑记录：
+### receive() 最终实现要点
+- ① `if(message.SYN) isn_ = message.seqno;`（SYN 的 seqno 就是 ISN）
+- ② `if(!isn_.has_value()) return;`（没原点没法翻译，丢弃）
+- ③ `checkpoint = bytes_pushed() + 1`
+- ④ `abs = message.seqno.unwrap(*isn_, checkpoint)`
+- ⑤ `stream_index = abs + message.SYN - 1`（bool 当 0/1；带 SYN 时 +1−1 抵消）
+- ⑥ `reassembler.insert(stream_index, payload, message.FIN, inbound_stream)`
+
+### send() 最终实现要点 + 三个真实 bug（都靠跑测试抓出）
+- 结构：先算 window；`!isn_.has_value()` → 返回 `{nullopt, window}`；否则 wrap 出 ackno。
+- **bug1**：ackno 忘了 `wrap`——直接 `Wrap32{abs}` 没以 ISN 为原点。connect 2(ISN=89347598)
+  期望 89347599 却得 1。修：`Wrap32::wrap(abs, *isn_)`。（wrap 是**静态**方法，类名::调）
+- **bug2**：abs_ackno 漏了 FIN。connect 6(SYN+FIN) 期望 7 得 6。
+  修：`bytes_pushed() + 1 + (inbound_stream.is_closed() ? 1 : 0)`。
+- **bug3**：window 用 `static_cast<uint16_t>` 截断（max+1=65536 → 0）。
+  修：`min(available_capacity, (uint64_t)UINT16_MAX)`（两参同类型，先 min 再装进 uint16）。
+- 关键概念：FIN 的 +1 必须挂 `is_closed()`（流真关了），不能挂 `message.FIN`——
+  FIN 乱序先到不算确认（确认=拼图进度，不是签收）。
+- 易错：`std::min` 两参必须同类型（uint64_t vs int UINT16_MAX 编译不过）；需 `#include <algorithm>`。
+
+### 全景串联（关键认知纠偏）
+
+- **wrap/unwrap 只是两把"翻译螺丝刀"，不是 check2 主体。** 主体是 `receive()` 和 `send()` 两个调度员。
+- `receive()`：收报文 → unwrap(32→64) → 减 SYN 得 stream index → 喂 `reassembler.insert()`
+- `send()`：读 `bytes_pushed` → 算"下一个想要的 absolute" → wrap(64→32) → ackno
+- **关键接缝：absolute → stream index 的转换在 receive() 里手写一行**（不是 unwrap 给的）：
+  `payload 字节 stream index = absolute − 1`（−1 是 SYN 占走的 absolute 0）。
+- **send() 读 ByteStream 不读 Reassembler**（签名只给 `Writer&`）；数据源是 `bytes_pushed()`。
+
+### 两个消息结构体（再确认）
+
+- `TCPSenderMessage`（输入）**只有 4 个字段**：`seqno / SYN / payload / FIN`。
+  Minnow 简化了模型，**没有 ACK/RST/PSH 等标志**。receive() 要处理的就这 4 个。
+- `TCPReceiverMessage`（输出）：`ackno`(optional) + `window`。**没有 SYN**——Receiver 永不产生 SYN。
+
+### TCP 全双工 + check2 的边界
+
+- TCP 是全双工：A→B、B→A 两条独立流，各有 ISN/SYN/FIN/编号。
+- 每台主机同时演两角：Sender（管 seqno/SYN/FIN）+ Receiver（管 ackno/window）。
+- 三次握手第②个报文 = SYN(来自B的Sender) + ACK(来自B的Receiver) 合体；合并是 TCPPeer 层(后面的 check)的活。
+- **check2 只造一条流的 Receiver 半边**，不碰握手编排——只做：记 ISN、喂拼图、报 ackno+window。
+
+### 成员变量设计
+
+- reassembler / inbound_stream 都是**参数**（别人保管），不是成员。
+- checkpoint 每次用 `inbound_stream.bytes_pushed()` 现算，不用存。
+- **唯一要跨调用记住的是 ISN** → `std::optional<Wrap32> isn_ {}`。
+- 为什么用 optional：它=「值 + bool标志」的安全打包，天然表达「没收到SYN(空)/已收到(有值)」，
+  且和 ackno 的 nullopt 语义同构。空盒默认构造、赋值即填充、取值前先 `has_value()`。
+
+### 踩坑记录
 
 >
 
@@ -137,6 +236,32 @@
 - 明日（Day 5）：阶段 2 开场谜题——ISN 为什么随机（方向已猜对：保护 + 防串台）→ 阶段 3 动手。
 - 晚间加餐：提前开进阶段 2（ISN 之谜 + 32 位回绕 + 三套编号）。
 - 阶段 1 答案复查：Q1 重写合格（水管四要素），Q4 标签版合格；Q3 一处笔误仍待修：回执是告诉「发送方」。
+- 阶段 2 通关：手算表 11/12，唯一错格是给 FIN 发了 stream index——
+  用「两本账本」掰直：seqno 数"要运的东西"，stream index 数"能读的字节"；
+  SYN/FIN 要运（必须能被确认+重传）但不可读（FIN 到 Reassembler 门口化为 is_last_substring 这个 bool）。
+- 理解检查通过："重要标志也要可靠传输，可靠传输就需要编号+重传"。
+- 待办：填阶段 2 的 3 个问题；阶段 1 Q3 笔误（→ 发送方）记得改。
+- 睡前思考题（可选，明天阶段 3 开场用）：一条长连接里收到 seqno = 1500，
+  它可能是 absolute 500、500 + 2^32、500 + 2·2^32……接收方手里有什么线索能挑出对的那个？
+- 阶段 2 答案复查：Q3 表格 12/12 全对且自行抽象成 isn+偏移 形式；Q2 通过；
+  Q1 待补最关键半句——32 位的后果是回绕（4 GiB 一圈），这是 wrap/unwrap 存在的原因。
+- 术语纠正：表格行名「网络字节序」要改成「seqno（序号）」——
+  字节序（byte order）是大端/小端那个概念，完全是另一回事；「绝对index」改「绝对序号」。
+- 攻击画面补充：off-path 攻击者只能盲发伪造报文，序号可预测=盲发也能命中窗口；
+  随机 ISN = 32 位暗号。
+
+### 2026-06-13（Day 5）
+
+- 阶段 3 通关（6/6 全绿）：wrap 一行拿下；unwrap 自己用"数圈数"方法调了 5 轮，
+  全是无符号减法方向写错→下溢的同一类病（详见阶段 3 踩坑）。坚持用自己的方法压绿。
+- 收获可复用招式 signed modular distance（int32_t hop），已收进工具箱，下次回绕求最近直接调。
+- 阶段 4 概念铺开：纠正"wrap/unwrap 是主体"的误解（它们只是 receive/send 内部的翻译工具）；
+  讲清 absolute→stream index 的接缝在 receive() 手写、send() 读 bytes_pushed 不读 Reassembler；
+  讲清 TCP 全双工 + check2 只造一条流 Receiver 半边、不碰握手编排；
+  TCPSenderMessage 只有 4 字段（无 ACK/RST）。
+- 学了 std::optional<Wrap32>（之前没用过）：空盒/有值，赋值即填充，取值前 has_value()。
+- 节奏校准：用户主动要求放慢，把零件串成全景后再写代码。剩 3-4 小时，目标当天通关 check2。
+- 下一步：定成员变量 isn_ → 写 receive() 第①②步（记 ISN / 没 ISN 就 return）。
 
 ---
 
