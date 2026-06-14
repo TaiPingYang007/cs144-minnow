@@ -22,6 +22,11 @@ inline std::string to_string( Wrap32 i )
   return "Wrap32<" + std::to_string( DebugWrap32 { i }.debug_get_raw_value() ) + ">";
 }
 
+inline std::string to_string( const std::string& str )
+{
+  return str;
+}
+
 template<typename T>
 std::string to_string( const std::optional<T>& v )
 {

@@ -43,6 +43,7 @@ struct TestStep
   virtual std::string str() const = 0;
   virtual void execute( T& ) const = 0;
   virtual uint8_t color() const = 0;
+  virtual constexpr std::string obj() const { return demangle( typeid( T ).name() ); }
 
   TestStep() = default;
   TestStep( const TestStep& other ) = default;
@@ -129,6 +130,8 @@ struct Expectation : public TestStep<T>
 {
   std::string str() const override { return "Expectation: " + description(); }
   virtual std::string description() const = 0;
+  virtual void execute( const T& obj ) const { execute( const_cast<T&>( obj ) ); }
+  void execute( T& obj ) const override { execute( static_cast<const T&>( obj ) ); }
   uint8_t color() const override { return Printer::green; }
 };
 
@@ -168,8 +171,8 @@ template<class T>
 struct ExpectBool : public ConstExpectBool<T>
 {
   using ConstExpectBool<T>::ConstExpectBool;
-  virtual bool value( T& ) const = 0;
   bool value( const T& obj ) const override { return value( const_cast<T&>( obj ) ); }
+  virtual bool value( T& obj ) const { return value( static_cast<const T&>( obj ) ); }
 };
 
 template<class T, typename Num>
@@ -193,6 +196,6 @@ template<class T, typename Num>
 struct ExpectNumber : public ConstExpectNumber<T, Num>
 {
   using ConstExpectNumber<T, Num>::ConstExpectNumber;
-  virtual Num value( T& ) const = 0;
   Num value( const T& obj ) const override { return value( const_cast<T&>( obj ) ); }
+  virtual Num value( T& obj ) const { return value( static_cast<const T&>( obj ) ); }
 };

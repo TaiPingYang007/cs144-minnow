@@ -18,5 +18,6 @@ public:
   uint16_t rt_timeout = TIMEOUT_DFLT;      //!< Initial value of the retransmission timeout, in milliseconds
   size_t recv_capacity = DEFAULT_CAPACITY; //!< Receive capacity, in bytes
   size_t send_capacity = DEFAULT_CAPACITY; //!< Sender capacity, in bytes
+  Wrap32 isn { 137 };                      //!< Initial Sequence Number for the TCP sender
   std::optional<Wrap32> fixed_isn {};
 };

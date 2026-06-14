@@ -27,6 +27,7 @@ struct TCPSenderMessage
   bool SYN { false };
   Buffer payload {};
   bool FIN { false };
+  bool RST { false };
 
   // How many sequence numbers does this segment use?
   size_t sequence_length() const { return SYN + payload.size() + FIN; }
