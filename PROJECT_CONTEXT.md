@@ -107,3 +107,17 @@
 - ackno 表示连续拼好的进度，不表示“见过的最大 seqno”。
 - FIN 是否被确认要看 ByteStream 是否 `is_closed()`，不能只看当前报文是否带 FIN。
 - window_size 要 `min(available_capacity, UINT16_MAX)`，不能直接截断成 `uint16_t`。
+
+## Checkpoint starter 文件导入策略
+
+当前 CS144 Minnow 仓库的 check0-check2 已完成并通过；进入 check3 时发现本地缺少 check3 所需的 starter/test 文件。本次没有 clone 或整体导入外部完整仓库，而是只从近官方公共镜像 `Richard-Qin-X/minnow` 的精确历史提交中提取 check3 starter 相关文件：
+
+- 来源仓库：`Richard-Qin-X/minnow`
+- 来源提交：`b4fae30bec030c40de5389a9576d5c782279626c`
+- 提交信息：`CS144 Lab checkpoint 3`
+- 作者：Keith Winstein
+- 本地处理：仅导入缺失的 check3 starter/test 文件，并做最小必要的本地兼容性编辑；不导入任何解答实现或后续 HEAD 状态。
+
+以后处理 check4/check5/check6/check7 时沿用同一原则：优先寻找官方或近官方镜像中对应 checkpoint 的精确 starter commit；先与本地仓库对比，只导入本地缺失的该 checkpoint starter/test/support 文件；避免直接使用公共仓库 HEAD，因为很多 public HEAD 已经包含学生解答或后续实验改动，不能整体覆盖本地仓库。如果只能找到 solved repo，也必须回溯到对应 checkpoint 的历史 starter commit；若无法回溯，则只允许在能清楚识别并清除实现代码的前提下手工提取框架文件。
+
+每次导入后都要验证两件事：第一，之前已经完成的 checks 仍然通过；第二，新 checkpoint 在未实现 starter 逻辑时应当失败或暴露待实现测试，而不是意外通过。这样可以确认导入的是正确的实验框架，而不是混入了解答。
