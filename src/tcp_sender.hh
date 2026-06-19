@@ -5,6 +5,7 @@
 #include "tcp_sender_message.hh"
 
 #include <functional>
+#include <queue>
 #include <utility>
 
 class TCPSender
@@ -43,4 +44,15 @@ private:
   ByteStream input_;
   Wrap32 isn_;
   uint64_t initial_RTO_ms_;
+
+  uint64_t time_ { 0 };
+  uint64_t current_RTO_ { initial_RTO_ms_ };
+  uint64_t consecutive_retransmissions_ { 0 };  // 连续重传计数
+
+  uint64_t next_seqno_ { 0 };
+  uint64_t acked_seqno_ { 0 };
+  uint64_t window_size_ { 1 };
+  std::queue<std::pair<uint64_t,TCPSenderMessage>> outstanding_ {};
+  bool syn_sent_ { false };
+  bool fin_sent_ { false };
 };

@@ -11,9 +11,10 @@
 - check0 ByteStream：已完成
 - check1 Reassembler：已完成，官方测试 18/18
 - check2 TCPReceiver：已完成，官方测试 30/30
-- 下一站：check3 TCPSender
+- check3 TCPSender：已完成，本地 check3 测试 37/37（2026-06-20）；笔记见 `notes/check3-tcp-sender.md`
+- 下一站：check4 NetworkInterface（ARP / IP↔MAC / 以太网帧）
 
-当前主恢复入口已经从 check1/check2 切到 **check3: TCPSender**。
+当前主恢复入口已切到 **check4: NetworkInterface**。⚠️ **check4 starter 缺失**：本地无 `src/network_interface.*`、无 `tests/net_interface*`，`make check4` 跑出 `net_interface (Not Run)`。开工前需按下方「Checkpoint starter 文件导入策略」，从官方镜像 check4 对应 checkpoint 提取 starter/test 文件并验证（已完成的 checks 仍过、check4 未实现时正确失败）。
 
 ## 关键文件
 
