@@ -211,7 +211,7 @@ TCPSender 是 ____（一句话概括它是什么、管哪个方向）。
 
 - **check3 完成**：7 个 send 测试全绿 + check0/1/2 回归 + 性能/编译优化 = **37/37**。
 - 最后两个边界（send_extra 才暴露）：① **RST** —— `make_empty_message` 流出错带 `RST=true`、`receive` 收 RST 则 `input_.set_error()`（`has_error`/`set_error` 就是 check0 的 ByteStream 接口，第一次用上）；② **len 扣 SYN 占位** —— 窗口上限 `window_room - msg.SYN`（SYN 也吃窗口序号预算，`window=3` 边界才暴露）。
-- 下一步：**check4 = NetworkInterface（ARP / IP↔MAC）**，独立主题，另开对话。
+- 下一步：**check5 = NetworkInterface（ARP / IP↔MAC）**，独立主题，另开对话。
 
 ### 2026-06-19 · check3 主体完成（6/7 绿）+ 两张全局图
 
