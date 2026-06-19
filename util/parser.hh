@@ -36,6 +36,21 @@ class Parser
     uint64_t size() const { return size_; }
     uint64_t serialized_length() const { return size(); }
     bool empty() const { return size_ == 0; }
+    std::vector<std::string_view> buffer() const
+    {
+      std::vector<std::string_view> out {};
+      out.reserve( buffer_.size() );
+      bool first = true;
+      for ( const auto& buffer : buffer_ ) {
+        if ( first ) {
+          out.push_back( std::string_view { buffer }.substr( skip_ ) );
+          first = false;
+        } else {
+          out.push_back( std::string_view { buffer } );
+        }
+      }
+      return out;
+    }
 
     std::string_view peek() const
     {
@@ -116,6 +131,7 @@ public:
   bool has_error() const { return error_; }
   void set_error() { error_ = true; }
   void remove_prefix( size_t n ) { input_.remove_prefix( n ); }
+  std::vector<std::string_view> buffer() const { return input_.buffer(); }
 
   template<std::unsigned_integral T>
   void integer( T& out )
@@ -156,6 +172,7 @@ public:
 
   void all_remaining( std::vector<Buffer>& out ) { input_.dump_all( out ); }
   void all_remaining( Buffer& out ) { input_.dump_all( out ); }
+  void concatenate_all_remaining( Buffer& out ) { all_remaining( out ); }
 };
 
 class Serializer
@@ -202,6 +219,8 @@ public:
     flush();
     return output_;
   }
+
+  std::vector<Buffer> finish() { return output(); }
 };
 
 // Helper to serialize any object (without constructing a Serializer of the caller's own)
@@ -220,4 +239,35 @@ bool parse( T& obj, const std::vector<Buffer>& buffers )
   Parser p { buffers };
   obj.parse( p );
   return not p.has_error();
+}
+
+template<class T>
+bool parse( T& obj, std::vector<Buffer>&& buffers )
+{
+  return parse( obj, buffers );
+}
+
+template<class T>
+bool parse( T& obj, const std::vector<Buffer>& buffers, const uint32_t datagram_layer_pseudo_checksum )
+{
+  Parser p { buffers };
+  obj.parse( p, datagram_layer_pseudo_checksum );
+  return not p.has_error();
+}
+
+template<class T>
+bool parse( T& obj, std::vector<Buffer>&& buffers, const uint32_t datagram_layer_pseudo_checksum )
+{
+  return parse( obj, buffers, datagram_layer_pseudo_checksum );
+}
+
+template<class T>
+bool parse( T& obj, std::vector<std::string>&& buffers )
+{
+  std::vector<Buffer> converted;
+  converted.reserve( buffers.size() );
+  for ( auto&& buffer : buffers ) {
+    converted.emplace_back( std::move( buffer ) );
+  }
+  return parse( obj, converted );
 }

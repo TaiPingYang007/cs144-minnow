@@ -150,6 +150,53 @@ void FileDescriptor::read( vector<unique_ptr<string>>& buffers )
   }
 }
 
+void FileDescriptor::read( vector<string>& buffers )
+{
+  if ( buffers.empty() ) {
+    return;
+  }
+
+  if ( buffers.back().empty() ) {
+    buffers.back().resize( kReadBufferSize );
+  }
+
+  vector<iovec> iovecs;
+  iovecs.reserve( buffers.size() );
+  size_t total_size = 0;
+  for ( auto& buffer : buffers ) {
+    iovecs.push_back( { buffer.data(), buffer.size() } );
+    total_size += buffer.size();
+  }
+
+  const ssize_t bytes_read = ::readv( fd_num(), iovecs.data(), static_cast<int>( iovecs.size() ) );
+  if ( bytes_read < 0 ) {
+    if ( internal_fd_->non_blocking_ and ( errno == EAGAIN or errno == EINPROGRESS ) ) {
+      return;
+    }
+    throw unix_error { "read" };
+  }
+
+  register_read();
+
+  if ( bytes_read == 0 ) {
+    internal_fd_->eof_ = true;
+  }
+
+  if ( bytes_read > static_cast<ssize_t>( total_size ) ) {
+    throw runtime_error( "read() read more than requested" );
+  }
+
+  size_t remaining_size = bytes_read;
+  for ( auto& buffer : buffers ) {
+    if ( remaining_size >= buffer.size() ) {
+      remaining_size -= buffer.size();
+    } else {
+      buffer.resize( remaining_size );
+      remaining_size = 0;
+    }
+  }
+}
+
 size_t FileDescriptor::write( string_view buffer )
 {
   return write( vector<string_view> { buffer } );
@@ -178,6 +225,16 @@ size_t FileDescriptor::write( const vector<string_view>& buffers )
   }
 
   return bytes_written;
+}
+
+size_t FileDescriptor::write( const vector<Buffer>& buffers )
+{
+  vector<string_view> views;
+  views.reserve( buffers.size() );
+  for ( const auto& buffer : buffers ) {
+    views.emplace_back( buffer );
+  }
+  return write( views );
 }
 
 void FileDescriptor::set_blocking( bool blocking )

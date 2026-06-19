@@ -1,5 +1,6 @@
 #pragma once
 
+#include "address.hh"
 #include "wrapping_integers.hh"
 
 #include <cstddef>
@@ -20,4 +21,15 @@ public:
   size_t send_capacity = DEFAULT_CAPACITY; //!< Sender capacity, in bytes
   Wrap32 isn { 137 };                      //!< Initial Sequence Number for the TCP sender
   std::optional<Wrap32> fixed_isn {};
+};
+
+//! Config for adapters between TCP segments and datagrams.
+class FdAdapterConfig
+{
+public:
+  Address source { "0", 0 };
+  Address destination { "0", 0 };
+
+  uint16_t loss_rate_dn = 0; //!< Downlink loss rate in percent
+  uint16_t loss_rate_up = 0; //!< Uplink loss rate in percent
 };

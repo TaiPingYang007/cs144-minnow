@@ -5,8 +5,10 @@
 #include <cstddef>
 #include <linux/if_packet.h>
 #include <net/if.h>
+#include <optional>
 #include <stdexcept>
 #include <sys/ioctl.h>
+#include <sys/uio.h>
 #include <unistd.h>
 
 using namespace std;
@@ -138,6 +140,52 @@ void DatagramSocket::recv( Address& source_address, string& payload )
   payload.resize( recv_len );
 }
 
+void DatagramSocket::recv( Address& source_address, vector<string>& payloads )
+{
+  if ( payloads.empty() ) {
+    throw runtime_error( "DatagramSocket::recv called with no payload buffers" );
+  }
+
+  if ( payloads.back().empty() ) {
+    payloads.back().resize( kReadBufferSize );
+  }
+
+  vector<iovec> iovecs;
+  iovecs.reserve( payloads.size() );
+  size_t total_size = 0;
+  for ( auto& payload : payloads ) {
+    iovecs.push_back( { payload.data(), payload.size() } );
+    total_size += payload.size();
+  }
+
+  Address::Raw raw_source_address;
+  msghdr message { .msg_name = &raw_source_address,
+                   .msg_namelen = sizeof( raw_source_address ),
+                   .msg_iov = iovecs.data(),
+                   .msg_iovlen = iovecs.size(),
+                   .msg_control = nullptr,
+                   .msg_controllen = 0,
+                   .msg_flags = 0 };
+
+  const ssize_t recv_len = CheckSystemCall( "recvmsg", ::recvmsg( fd_num(), &message, MSG_TRUNC ) );
+  if ( recv_len > static_cast<ssize_t>( total_size ) or ( message.msg_flags & MSG_TRUNC ) ) {
+    throw runtime_error( "recvmsg (oversized datagram)" );
+  }
+
+  register_read();
+  source_address = { raw_source_address, message.msg_namelen };
+
+  size_t remaining_size = recv_len;
+  for ( auto& payload : payloads ) {
+    if ( remaining_size >= payload.size() ) {
+      remaining_size -= payload.size();
+    } else {
+      payload.resize( remaining_size );
+      remaining_size = 0;
+    }
+  }
+}
+
 void DatagramSocket::sendto( const Address& destination, const string_view payload )
 {
   CheckSystemCall( "sendto",
@@ -149,6 +197,39 @@ void DatagramSocket::send( const string_view payload )
 {
   CheckSystemCall( "send", ::send( fd_num(), payload.data(), payload.length(), 0 ) );
   register_write();
+}
+
+void DatagramSocket::send( const vector<Buffer>& payloads, const optional<Address>& destination )
+{
+  vector<string_view> views;
+  views.reserve( payloads.size() );
+  size_t total_size = 0;
+  for ( const auto& payload : payloads ) {
+    views.emplace_back( payload );
+    total_size += payload.size();
+  }
+
+  vector<iovec> iovecs;
+  iovecs.reserve( views.size() );
+  for ( const auto& view : views ) {
+    iovecs.push_back( { const_cast<char*>( view.data() ), view.size() } );
+  }
+
+  msghdr message { .msg_name = destination.has_value()
+                                 ? static_cast<void*>( const_cast<sockaddr*>( static_cast<const sockaddr*>( *destination ) ) )
+                                 : nullptr,
+                   .msg_namelen = destination.has_value() ? destination->size() : 0,
+                   .msg_iov = iovecs.data(),
+                   .msg_iovlen = iovecs.size(),
+                   .msg_control = nullptr,
+                   .msg_controllen = 0,
+                   .msg_flags = 0 };
+
+  const ssize_t bytes_sent = CheckSystemCall( "sendmsg", ::sendmsg( fd_num(), &message, 0 ) );
+  register_write();
+  if ( bytes_sent != static_cast<ssize_t>( total_size ) ) {
+    throw runtime_error( "sendmsg sent some length other than that of payload" );
+  }
 }
 
 // mark the socket as listening for incoming connections

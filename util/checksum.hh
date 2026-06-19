@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <vector>
 
 //! The internet checksum algorithm
@@ -39,6 +40,13 @@ public:
   }
 
   void add( const std::vector<Buffer>& data )
+  {
+    for ( const auto& x : data ) {
+      add( x );
+    }
+  }
+
+  void add( const std::vector<std::string_view>& data )
   {
     for ( const auto& x : data ) {
       add( x );

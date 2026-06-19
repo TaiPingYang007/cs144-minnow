@@ -1,11 +1,16 @@
 #pragma once
 
 #include "address.hh"
+#include "buffer.hh"
 #include "file_descriptor.hh"
 
 #include <cstdint>
 #include <functional>
+#include <optional>
+#include <string>
+#include <string_view>
 #include <sys/socket.h>
+#include <vector>
 
 //! \brief Base class for network sockets (TCP, UDP, etc.)
 //! \details Socket is generally used via a subclass. See TCPSocket and UDPSocket for usage examples.
@@ -65,12 +70,21 @@ class DatagramSocket : public Socket
 public:
   //! Receive a datagram and the Address of its sender
   void recv( Address& source_address, std::string& payload );
+  void recv( Address& source_address, std::vector<std::string>& payloads );
 
   //! Send a datagram to specified Address
   void sendto( const Address& destination, std::string_view payload );
 
   //! Send datagram to the socket's connected address (must call connect() first)
   void send( std::string_view payload );
+  void send( const std::vector<Buffer>& payloads, const std::optional<Address>& destination = {} );
+};
+
+//! A wrapper around Unix-domain stream sockets
+class LocalStreamSocket : public Socket
+{
+public:
+  explicit LocalStreamSocket( FileDescriptor&& fd ) : Socket( std::move( fd ), AF_UNIX, SOCK_STREAM ) {}
 };
 
 //! A wrapper around [UDP sockets](\ref man7::udp)
