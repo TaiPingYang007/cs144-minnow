@@ -8,6 +8,7 @@
 #include <queue>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 
 // A "network interface" that connects IP (the internet layer, or network layer)
 // with Ethernet (the network access layer, or link layer).
@@ -84,4 +85,18 @@ private:
 
   // Datagrams that have been received
   std::queue<InternetDatagram> datagrams_received_ {};
+
+  size_t current_time_ { 0 };
+
+  // ARP缓存，IP+MAC
+  std::unordered_map<uint32_t , std::pair<EthernetAddress, size_t>> arp_table_ {};
+  
+  // 等待ARP回复才能发送的数据报 + 等待时间
+  struct PendingDatagramAndTime{
+    std::vector<InternetDatagram> pending_datagram_ {};
+    size_t time_ {};
+  };
+
+  // 等待ARP回复才能发送的数据报：next_hop IP → 排队的数据报们
+  std::unordered_map<uint32_t , PendingDatagramAndTime> pending_datagrams_ {};
 };

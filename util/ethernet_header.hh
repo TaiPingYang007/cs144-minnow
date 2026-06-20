@@ -10,6 +10,8 @@
 using EthernetAddress = std::array<uint8_t, 6>;
 
 // Ethernet broadcast address (ff:ff:ff:ff:ff:ff)
+// 广播地址 = 本地链路所有人都收
+// （全 1 的 MAC：发到这个地址，同一链路上每台机器都会收下）
 constexpr EthernetAddress ETHERNET_BROADCAST = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 
 // Printable representation of an EthernetAddress

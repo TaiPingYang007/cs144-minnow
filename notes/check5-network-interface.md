@@ -153,8 +153,185 @@ NetworkInterface（一个路由器有多个接口）。
 
 ---
 
-## 待续（后续追加）
+## 4. 三个口子（对标 check3 TCPSender 三入口）
 
-- [ ] 三个口子 `send_datagram` / `recv_frame` / `tick` 的输入输出（对标 check3 三入口）
-- [ ] check5 分阶段攻关计划（以 net_interface 测试为准）
-- [ ] 带读 `src/network_interface.hh` 成员变量、动手写实现
+NetworkInterface 不写主循环，是被外面"戳"的对象（和 TCPSender 同构）：
+
+| check3 `TCPSender` | check5 `NetworkInterface` | 角色 |
+|---|---|---|
+| `push()` 上层要发数据 | `send_datagram(dgram, next_hop)` 上层要发 IP 数据报 | 出方向 |
+| `receive(msg)` 收到 ack | `recv_frame(frame)` 收到以太网帧 | 入方向 |
+| `tick(ms)` 触发重传 | `tick(ms)` 触发 ARP 缓存过期 | 时钟 |
+
+逐口输入输出：
+- **`send_datagram(dgram, next_hop)`**：缓存命中 next_hop 的 MAC→直接封 IPv4 帧发；
+  未命中→广播 ARP request 问 next_hop 的 MAC + 数据报入队等回复。
+- **`recv_frame(frame)`** 按 `header.type` 分两路：
+  - `TYPE_IPv4`：只看**帧的 dst_mac 是不是我**（或广播），是就把数据报原样推进
+    `datagrams_received_`。**不验数据报的 dst_ip**（那是上层 IP/路由的事；check6 路由器
+    收到的帧目的 IP 故意不是自己）。
+  - `TYPE_ARP`：无条件**学** sender 的 IP→MAC；若是 request 且 target_ip==我的 IP→回 reply；
+    学完把队列里等这个 IP 的包发掉。
+- **`tick(ms)`**：推进内部时间，清理过期的 ARP 缓存（30s）和过期的 pending 请求（5s）。
+
+它自己拥有两块状态：① **ARP 缓存** `IP→(MAC, 学到时刻)` ② **等待队列 + 已问记录**。
+
+### 🔑 三颗关键螺丝（第一次最容易拧错）
+
+1. **数据报里装的是最终 dst_ip，不是 next_hop。** 例：dgram.dst_ip=13.12.11.10、
+   next_hop=192.168.0.1 是两个不同 IP。ARP 问的是 **next_hop(192.168.0.1)**，因为最终
+   目的地不在本地链路上、广播问它毫无意义。next_hop 不写进任何字节，只用来：(a) ARP 查 MAC，
+   (b) 填进帧的 dst_mac，用完即弃。每一跳是新的 NetworkInterface 拿自己的 next_hop 重新封帧
+   → 这就是"MAC 每跳变、IP 不变"。
+2. **收 IPv4 帧只验 dst_mac，不验 dst_ip。** 分层职责：链路层只管这一跳交接对不对，"该不该
+   收/可不可达"是 IP 层/路由(check6)的事。
+3. **这层是 best-effort（故意不保证送达）。** ARP 5s 问不到就默默丢包、不报错。可靠性靠上层
+   TCP 重传(check3)兜底——这就是当年逼你写重传定时器的根本原因，两个 check 在此闭环。
+
+分层定位：传输层 TCP(check0-3) ↑ 网络层 IP(数据报) ↑ **链路层 以太网+ARP(check5 当前)**。
+
+---
+
+## 5. 代码类型映射（名词 → 真实类型，写实现回头查）
+
+| 全景概念 | 代码类型 | 关键字段 / 方法 |
+|---|---|---|
+| MAC | `EthernetAddress` | `std::array<uint8_t,6>` |
+| 广播地址 | `ETHERNET_BROADCAST` | `ff:ff:ff:ff:ff:ff` 常量 |
+| 帧头 | `EthernetHeader` | `{dst,src,type}`；`TYPE_IPv4=0x800`/`TYPE_ARP=0x806` |
+| 帧 | `EthernetFrame` | `{header, payload(vector<Buffer>)}` |
+| IP 数据报 | `InternetDatagram` | `{header, payload}`；header 有 `src`/`dst`(uint32) |
+| IP 地址 | `Address` | `.ipv4_numeric()`→u32；`.ip()`→串；`from_ipv4_numeric(u32)` |
+| ARP 消息 | `ARPMessage` | `opcode`(REQUEST=1/REPLY=2)、`sender_/target_ethernet_address`、`sender_/target_ip_address`(u32)；前 4 字段有默认值别碰 |
+
+⚠️ `ARPMessage` 里 IP 是 `uint32_t`，`next_hop` 是 `Address` → 用 `next_hop.ipv4_numeric()` 互转。
+
+三座桥梁（字节 ⇄ 结构体，封帧/拆帧的全部动作）：
+```cpp
+serialize(arp_or_dgram)   → vector<Buffer>    // 结构体→字节，塞进 frame.payload
+parse(obj, frame.payload) → bool              // 字节→结构体，true=成功
+```
+封帧：`frame.header.type=TYPE_IPv4; frame.payload=serialize(dgram);` 再填 src/dst MAC。
+拆帧：先看 `header.type`，再 `parse(arp/dgram, frame.payload)`。
+
+---
+
+## 6. 分阶段攻关计划（按 net_interface.cc 测试难度递增）
+
+**阶段 A — 收发直路 + ARP 基本问答（先不管时间）**
+建两块状态(缓存+队列)，跑通三个口子主干：
+- `send_datagram`：命中→封 IPv4 帧发；未命中→广播 ARP request + 入队
+- `recv_frame` 收 ARP：学 sender 映射；request 问我→回 reply；学完发掉队列里等它的包
+- `recv_frame` 收 IPv4：dst_mac 是我→推入 datagrams_received_
+- 测试：typical ARP workflow / reply to ARP request / learn from ARP request /
+  multiple & out-of-order pending / 独立 mapping / broadcast 学习 / unrequested reply
+
+**阶段 B — 加时间维度（tick + 过期）**
+两块状态盖时间戳：缓存活 30s 过期删；pending 5s 冷却(内不重复问、超时丢包)
+- 测试：active mappings last 30s / pending last 5s / update timestamp / dropped when expires
+
+**阶段 C — 边角 & 压力**
+- 学习"不是问我的"广播 ARP；50 次循环压力测试
+
+---
+
+## 自测题（第 2 轮 · 三入口 + 名词 + 代码）
+
+1. dgram.dst_ip=13.12.11.10、next_hop=192.168.0.1，ARP 该问谁的 MAC？为什么不是另一个？
+2. next_hop 这个值最终会出现在发出去的帧的哪个字段里？它本身会被传到对方机器吗？
+3. 收到一个 type=IPv4 的帧，要检查什么、不检查什么？为什么不验 dst_ip？
+4. ARP 5 秒没人回复，排队的数据报怎么办？这种"不保证送达"靠哪一层、你哪个 check 兜底？
+5. `ARPMessage` 里 IP 字段是什么类型？和 `next_hop` 的 `Address` 怎么互转？
+6. 封一个 IPv4 帧，payload 怎么从 `InternetDatagram` 得到？拆帧怎么还原？
+
+<details>
+<summary>参考要点</summary>
+
+1. 问 next_hop(192.168.0.1)；最终目的地不在本地链路，广播问它没人应。
+2. 填进帧头 dst_mac；不会，对方用"自己的 MAC"收下，看不到 next_hop 概念，next_hop 用完即弃。
+3. 只验帧的 dst_mac 是不是我(或广播)；不验 dst_ip。分层：收不收/可达是 IP 层/路由的事。
+4. 默默丢包不报错(best-effort)；靠传输层 TCP 重传(check3)兜底。
+5. `uint32_t`；`next_hop.ipv4_numeric()` 得 u32，反向 `Address::from_ipv4_numeric(u32)`。
+6. `frame.payload = serialize(dgram)`；`parse(dgram, frame.payload)` 还原(返回 bool)。
+</details>
+
+---
+
+## 7. 实现进度（2026-06-20）
+
+- ✅ **`send_datagram` 完成并通过第 1 幕**。成员变量：`arp_table_`(`unordered_map<uint32_t, EthernetAddress>`)
+  + `pending_datagrams_`(`unordered_map<uint32_t, vector<InternetDatagram>>`)。逻辑：命中→封 IPv4 帧发；
+  未命中→入队 + 广播 ARP request（`already_asked` 防重复问）。
+- ✅ `typical ARP workflow` 步骤 1-5 全绿，失败点后移到**步骤 6**（收 ARP reply 该发排队包）。
+- ✅ **`recv_frame` 完成**：dst 判断(我/广播)→按 type 分；IPv4→push `datagrams_received_`；
+  ARP→学映射(存 `sender_*`，对方)+冲刷 `pending_`(发完 `erase`)+(request 且 target==我)回 reply。
+  踩坑：学映射存的是 `sender_*`(对方)不是 `ip_address_/ethernet_address_`(自己)；冲刷条件只看
+  `pending_.contains`；回 reply 要 `transmit(reply_frame)` 别发原帧；shadow 命名；冲刷后 `erase`。
+- ✅ **阶段 A 全通**：typical ARP workflow / reply to ARP request / learn from ARP request 三测试过。
+- ✅ **阶段 B 完成**：`tick`——全局时钟 `current_time_ += ms`；`std::erase_if` 清理过期的 pending(5s)/arp_table_(30s)。
+  pending 加发起时刻 `time_`(只第一次问时设，别每次刷新)；arp_table_ value 改 `std::pair<MAC, 学到时刻>`。
+- 🎉 **check5 全部通关：100% tests passed**（net_interface + no_skip），2026-06-21。NetworkInterface 完成。
+- C++ 踩坑沉淀：变量 shadow / 遍历中 erase 迭代器失效(改 `std::erase_if`) / `-Weffc++` 要求成员 `{}` 默认初始化 /
+  `.hh` 无 `using namespace std` 要写 `std::pair`。
+- 📌 架构认知：一个 NetworkInterface 对象 = 一台机器(A)的网卡；send_datagram/recv_frame 是 A 的两只手，
+  共享 `arp_table_`/`pending_`。`ip_address_`/`ethernet_address_`=A自己(焊死)；`sender_*`=每帧的对方。
+
+## 8. 类型速查（逐行精读 util 头文件的要点）
+
+### util/ethernet_header.hh
+- `using EthernetAddress = std::array<uint8_t,6>;` — MAC = 48 位 = **6 字节**；每字节 `uint8_t`(0~255)。
+  显示 `42:48:58:81:1d:68` 的 6 段就是数组的 6 个元素（十六进制）。用定长 `array` 而非 `string`：精确对应网线上的字节。
+- `ETHERNET_BROADCAST = {0xff ×6}` — 广播 MAC `ff:ff:..`，全 1 = 发给本地链路所有人。`constexpr` = 编译期常量。
+- `to_string(EthernetAddress)` — 把 6 字节数组转成可读串 `"42:48:.."`（**声明**要懂，实现黑盒）。
+- `struct EthernetHeader`（帧头 / 面单，固定 14 字节）：
+  - 常量：`LENGTH=14`；`TYPE_IPv4=0x800`；`TYPE_ARP=0x806`（`uint16_t`，告诉收方载荷是哪种）
+  - 字段：`dst` / `src`（`EthernetAddress`，目的 / 源 MAC）、`type`（`uint16_t`）
+  - 方法：`to_string()` / `parse()` / `serialize()`（字节 ⇄ 结构体，黑盒用）
+- `类型 变量名;` = 造一个该类型的空盒子起名；`盒子.字段 = 值` 往里填。
+
+### util/ethernet_frame.hh
+- `struct EthernetFrame { EthernetHeader header; vector<Buffer> payload; }` = **面单 + 货**（套娃落地）。
+- ⚠️ `vector<Buffer>` 是「**一个**载荷切成的几段字节」，**不是多个数据报**（一份货的多张纸）。
+  别和 `pending_datagrams_` 的 `vector<InternetDatagram>`（**多个**数据报）混。
+- `Buffer` = 一段字节；`serialize(dgram/arp)` 返回的正是 `vector<Buffer>`，所以能直接赋给 `frame.payload`。
+- 成员 `parse`/`serialize` = 整个帧 ⇄ 网线字节（底层收发用，你不调）；你调的是**自由函数** `serialize(x)`/`parse(obj, payload)`。
+
+### util/arp_message.hh
+- 常量：`LENGTH=28`；`OPCODE_REQUEST=1`/`OPCODE_REPLY=2`。
+- 前 4 字段（`hardware_type`/`protocol_type`/两个 `*_address_size`）都有默认值（以太网+IPv4，MAC6/IP4），**不用填**。
+- 核心 4 字段（要填）：`opcode`、`sender_ethernet_address`(MAC)、`sender_ip_address`(**uint32**)、
+  `target_ethernet_address`(MAC)、`target_ip_address`(**uint32**)。`sender_*`=发消息的人(填自己)，`target_*`=要找的人。
+- **request vs reply 字段对照**（写 recv_frame ARP 分支的命根子）：
+  | 字段 | REQUEST | REPLY |
+  |---|---|---|
+  | opcode | REQUEST | REPLY |
+  | sender_eth | 我的MAC | 对方MAC |
+  | sender_ip | 我的IP | 对方IP |
+  | target_eth | 空{} | 我的MAC |
+  | target_ip | 要找的IP | 我的IP |
+- 规律：`sender` 永远是发这条消息的人；request 的 `target_eth` 留空（正要问）；reply 把答案填进自己 `sender_eth`。
+- 收到任何 ARP（request 或 reply）→ 都能从 `sender_ip → sender_eth` 学到一条映射。
+
+---
+
+## 自测题（第 3 轮 · 完整实现，通关后复习）
+
+1. `recv_frame` 收到一个帧，**整体处理流程**是什么？（第一关判什么、然后按什么分叉、各分支干啥）
+2. ARP 分支的**三步**是什么顺序？「学映射」为什么是**无条件**的、存的是**谁**的 IP→MAC？
+3. 「冲刷 pending」为什么必须在 `recv_frame` 做、**不能**放进 `send_datagram`？（说出那个致命反例）
+4. 「重问」是什么？**谁负责删、谁负责问**？如果删完之后没有新的 `send_datagram`，还会重问吗？
+5. `tick` 管哪**两种过期**、各多少秒？为什么遍历容器删元素要用 `std::erase_if` 而不是 range-for + `erase`？
+6. `send_datagram` 命中/未命中缓存各干什么？`already_asked` 防的是什么？`pending` 的 `time_` 为什么只在「第一次问」时设？
+7. 回 ARP reply 的条件是 `target_ip==我 && opcode==REQUEST`——那个 `opcode==REQUEST` 去掉会怎样？
+
+<details>
+<summary>参考要点（先合上代码自己答，再对照）</summary>
+
+1. ① dst 是我或广播？否→丢。② 按 `type`：IPv4→`parse` 成 dgram→push `datagrams_received_`；ARP→进 ARP 三步。
+2. 顺序：先学映射→再冲刷 pending→（仅 request 且 target==我）回 reply。学映射无条件，因为链路上路过的 ARP 都白送 `sender` 的 IP→MAC，学下来省事（测试 `Learn from broadcast ARP request not for our IP` 要求）。存的是**对方**(`sender_*`)，不是自己(`ip_address_/ethernet_address_`)。
+3. 因为「现在能发了」这个事件发生在「MAC 到达」的时刻（recv 到 reply），不是「新包到来」的时刻。反例：typical workflow 第 3 幕收到 reply 后**立刻** ExpectFrame，而此刻没有新的 send 调用——放 send 就发不出去。
+4. 重问 = 重新广播 ARP 问同一个 IP。`tick` 负责删过期 pending；`send_datagram` 负责（删完后、新包来时）重问——靠 `already_asked` 变 false 自然走广播。**没有新包就不会重问**。
+5. pending 的 ARP 请求 5 秒、arp_table_ 缓存 30 秒。range-for + `erase` 会让迭代器失效（未定义行为）；`std::erase_if` 内部安全处理。
+6. 命中→封 IPv4 帧直接发；未命中→入队 + 广播 ARP。`already_asked` 防对同一 IP 重复广播。`time_` 只在第一次设，否则每来一个包就刷新计时、永远到不了 5 秒。
+7. ARP reply 的 `target_ip` 也可能是我（typical 第 3 幕 B 回我的 reply）；不判 `opcode` 就会把别人的「回答」误当「提问」去回 reply，多发一个 ARP 帧→紧跟的 `ExpectNoFrame` 失败。
+</details>
