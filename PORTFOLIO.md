@@ -1,6 +1,6 @@
 # CS144 — TCP/IP 协议栈实现（现代 C++ 从零实现）
 
-> 本文件说明本仓库中**我自己完成的部分**与**这个项目体现的技术能力**。
+> 本文件说明本仓库中**我自己完成的部分**（`src/` 协议栈实现）与**这个项目体现的技术能力**。
 > 仓库基于 Stanford CS144；学习路线框架来自 rinevard/NetworkDIY（见 [README](./README.md)）。
 > 诚实定位：本项目是"基于 CS144 课程的实现 + 深度原理掌握"，非原创课程或框架。
 
@@ -51,9 +51,7 @@
 > 项目主体是上面 **check0–6 的协议栈实现**；capstone 不写新算法，价值在于把它们**拼成完整系统、端到端跑通并验证**。
 
 - **单机重演 1969 ARPANET**：UCLA(`80.6.5.4`) ↔ Stanford(`50.9.8.7`) 经一台软件路由器，双向传输数据（含 UTF-8 中文）。
-- **逐包可解读**：ARP request/reply、三次握手、缓存过期重发、四次挥手。
-
-各 checkpoint 的中文学习笔记见 `notes/`：`check2-tcp-receiver` / `check3-tcp-sender` / `check5-network-interface` / `check6-router` / `check7-capstone`。
+- **逐包可解读**：ARP request/reply、三次握手、缓存过期重发、四次挥手——这套逐包分析我可在面试中完整复现。
 
 ## 面试可深聊的点（覆盖全栈，体现深度而非"跑通测试"）
 
@@ -69,10 +67,10 @@
 **capstone 联调**
 - 抓包里 `size=40` 为何分不出 SYN/FIN/ACK？两层 IP 地址（虚拟/物理）与 VPN 隧道有何相通？
 
-> 以上每点都有对应中文学习笔记（`notes/`），含场景比方、踩坑与自测题。
+> 以上每点我都能展开讲清原理、设计权衡与踩坑——欢迎面试深入追问。
 
 ## 归属
 
 - 协议设计与 starter code 版权归 **Stanford CS144（Keith Winstein）** — <https://cs144.github.io/>
 - 学习路线框架与初始仓库来自 **rinevard/NetworkDIY**（原学习路线 README 见 [README_NetworkDIY.md](./README_NetworkDIY.md)）。
-- 本仓库长期公开、仅作学习用途；本人贡献为 `src/` 实现与 `notes/` 学习笔记。
+- 本仓库长期公开、仅作学习用途；本人贡献为 `src/` 协议栈实现。

@@ -4,3 +4,11 @@
 /.vscode
 *.swp
 /.cache
+
+# CS144 课程实验文档（版权属 Stanford），本地保留、不公开再分发
+/handouts/
+
+# 私人学习笔记 / 内部规划 / 空白实验报告模板（本地保留，不公开）
+/notes/
+/PROJECT_CONTEXT.md
+/writeups/

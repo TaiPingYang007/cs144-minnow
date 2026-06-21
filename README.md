@@ -5,7 +5,6 @@
 > This is my from-scratch implementation of a TCP/IP stack while studying Stanford CS144.
 
 - 📄 **实现说明与技术亮点 / Implementation & highlights** → [PORTFOLIO.md](./PORTFOLIO.md)
-- 📒 **逐 checkpoint 学习笔记 / Notes** → [notes/](./notes/)（重点 [check7-capstone.md](./notes/check7-capstone.md)：全栈联调 + 逐包 DEBUG 解读）
 
 ## 技术关键词
 
@@ -21,6 +20,6 @@ This is a learning project, kept public, with no claim over the course materials
 - **协议设计与 starter code**：Stanford CS144（Keith Winstein）— <https://cs144.github.io/>
 - **学习路线框架与初始仓库**：rinevard/NetworkDIY — 原学习路线 README 完整保留于
   [README_NetworkDIY.md](./README_NetworkDIY.md) / [English](./README_NetworkDIY_en.md)
-- **本人贡献 / My work**：`src/` 下的协议栈实现 + `notes/` 学习笔记
+- **本人贡献 / My work**：`src/` 下的协议栈实现
 
 Credit to **Stanford CS144**, **Berkeley CS168**, and **rinevard/NetworkDIY**.
