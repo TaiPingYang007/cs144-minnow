@@ -14,7 +14,8 @@
 - check3 TCPSender：已完成，本地 check3 测试 37/37（2026-06-20）；笔记见 `notes/check3-tcp-sender.md`
 - check5 NetworkInterface：已完成，本地 check5 100% 通过（2026-06-21）；笔记见 `notes/check5-network-interface.md`
 - check6 Router：已完成，本地 check6 100% 通过（2026-06-21）；笔记见 `notes/check6-router.md`
-- 下一站：check7 / capstone（TCP-over-IP 全栈联调与 app 编译，apps/）
+- check7 Capstone：已完成单机版（2026-06-21）；`make check7` 编译 4 app 全过，3 终端 ARPANET 跑通，UCLA(80.6.5.4)↔Stanford(50.9.8.7) 经 fun_router 双向传数据；笔记见 `notes/check7-capstone.md`
+- **CS144 lab check0→7 实质全部通关 🏁**；可选未做：something creative(§8)、三人版/更大 Internet（无同学，跳过）
 
 当前学习入口仍是 **check5: NetworkInterface**。✅ 后续 starter 框架已补齐到可学习状态（2026-06-20）：check5 `NetworkInterface` 和 check6 `Router` 都已恢复到原始目录；check7/capstone 相关 app/support 也已恢复并可编译。`NetworkInterface` 与 `Router` 都保持 unimplemented 桩，没有混入解答。验证结果：`make check3` 回归全绿；`make check5` 运行到 `net_interface` 后因 `unimplemented send_datagram` 正确失败；`make check6` 编译通过后被前置 `net_interface` 未实现拦住。
 
