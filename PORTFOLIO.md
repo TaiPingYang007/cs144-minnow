@@ -1,75 +1,116 @@
 # CS144 — TCP/IP 协议栈实现（现代 C++ 从零实现）
 
-> 本文件说明本仓库中**我自己完成的部分**（`src/` 协议栈实现）与**这个项目体现的技术能力**。
-> 仓库基于 Stanford CS144；学习路线框架来自 rinevard/NetworkDIY（见 [README](./README.md)）。
-> 诚实定位：本项目是"基于 CS144 课程的实现 + 深度原理掌握"，非原创课程或框架。
+![C++](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus&logoColor=white)
+![Build](https://img.shields.io/badge/build-CMake-064F8C?logo=cmake&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-CTest%20passing-success)
+![Sanitizers](https://img.shields.io/badge/UBSan%20%2F%20ASan-clean-success)
 
-## 一句话
+> 用现代 C++ 从零实现 TCP/IP 协议栈（可靠字节流 → TCP → IP/ARP → 路由），并在自建仿真网络（IP-in-Ethernet-in-UDP 隧道）上跑通**端到端 TCP 通信**。约 1k 行核心实现（`src/`），各 checkpoint 单元测试全绿、UBSan / ASan 无未定义行为。
 
-用现代 C++ 从零实现一套 TCP/IP 协议栈（可靠字节流 → TCP → IP/ARP → 路由），并在自建仿真网络（IP-in-Ethernet-in-UDP 隧道）上跑通**端到端 TCP 通信**——能逐包解读线上的 ARP、三次握手、超时重传、缓存过期与四次挥手。
+**技术深度集中在三处**，每处都配可点击的代码锚点：
 
----
+1. **TCP 可靠传输** — 滑动窗口、超时重传（指数退避）、32↔64 位序号回绕。
+2. **协议栈封装与转发** — IP / 以太网封装解封、ARP 地址解析与缓存、最长前缀匹配路由。
+3. **端到端联调与逐包分析** — 自建仿真网络跑通真实通信，可逐包解读握手 / 重传 / 挥手。
 
-## 🔧 这个项目体现的技术能力
+## 核心亮点 · Highlights
 
-### 现代 C++（后端核心）
-- **所有权与零拷贝**：用 `move` 语义在协议各层间转移数据报 / 以太网帧的所有权，避免冗余拷贝；通过 `std::shared_ptr` 持有输出端口（OutputPort）。
-- **STL 实战**：`std::unordered_map` 实现 ARP 缓存与待发队列；`std::erase_if` 安全清理过期项（规避遍历中迭代器失效）；`std::optional<Address>` 表达"可空的下一跳"。
-- **健壮性**：全程 `-Werror -Wextra -Weffc++` 严格编译通过；代码在 **UBSan / ASan** 下无未定义行为（例如做子网掩码时避开 `~0u << 32` 的移位 UB）。
-- 结构化绑定、`std::pair`、初始化列表、`constexpr` 常量等现代特性的实际运用。
+### 1. TCP 可靠传输：滑动窗口 + 超时重传 + 序号回绕
 
-### TCP / 可靠传输
-- 实现完整 TCP 收发两端：**三次握手 / 四次挥手**、**32↔64 位序号回绕**、**滑动窗口流量控制**、**超时重传**、累积确认（ackno / window 语义）。
-- 实现**乱序 / 重叠字节段的重组**（区间合并），把网络的无序交付还原成有序字节流。
+实现 TCP 发送端的滑动窗口与**超时重传定时器**：按对端通告窗口发送、累积确认推进窗口左沿；`tick` 累计时间触发最早未确认段重传，连续重传时**超时翻倍（指数退避）**，收到推进 ACK 后重置定时器与退避计数。序号在网络上是 32 位、会回绕，内部统一用 **64 位 absolute seqno** 作无歧义坐标，`wrap / unwrap` 借 checkpoint 就近还原。
 
-### 网络协议栈与系统底层
-- **IP 层**：IPv4 数据报封装、首部校验和、TTL 递减与转发。
-- **链路层**：ARP 地址解析（IP↔MAC）、ARP 缓存与过期淘汰。
-- **路由**：软件路由器的**最长前缀匹配（LPM）**转发——理解"按 bit 而非按字节"的掩码匹配、`/0` 默认路由。
-- **封装与字节序**：协议分层封装 / 解封、序列化 ↔ 反序列化、IP-in-Ethernet-in-UDP **隧道（网络仿真 / overlay）**。
+> 深度在：把"序号回绕 + 重传定时器"这类最容易写出 off-by-one 与误重置的地方做对了。
+> 锚点 — [`TCPSender::tick`](src/tcp_sender.cc#L101) · [`push`](src/tcp_sender.cc#L15) · [`receive`](src/tcp_sender.cc#L72) · [`Wrap32::wrap / unwrap`](src/wrapping_integers.cc#L6)
 
-### 工程与调试
-- **测试驱动**：从单元测试反推并校验实现行为（各 checkpoint 测试全绿）。
-- **抓包级调试**：能逐包解读运行时流量——辨认 ARP request / reply、握手 / 挥手、缓存过期重发，并理解为何抓包里 `size=40` 的控制段分不出 SYN/FIN/ACK（标志位在 TCP 头、不占 payload）。
-- **读大型代码库**：理解课程提供的适配 / 胶水层（socket、事件循环、TCP-over-IP 适配器），把自己的实现接进整套系统。
+### 2. 字节流重组：乱序 / 重叠 / 重复 → 有序流
 
----
+`Reassembler` 把网络无序交付的字节段按 stream index **区间合并**为连续流：处理重叠裁剪、重复丢弃、容量边界与 EOF 标志，再推进入站字节流。
 
-## 实现的模块（`src/`）
+> 深度在：重叠区间的裁剪与去重边界——多一字节、少一字节都会破坏有序流的正确性。
+> 锚点 — [`Reassembler::insert`](src/reassembler.cc#L5) · [`TCPReceiver::receive`](src/tcp_receiver.cc#L5)
+
+### 3. 协议栈封装 + ARP + 最长前缀匹配路由
+
+`NetworkInterface` 在 IP 数据报与以太网帧间封装 / 解封，并实现 **ARP**：缓存命中直接发，未命中广播请求并将数据报入队待发，缓存 30s 过期、pending 请求去重，学到映射后冲刷队列。`Router` 实现**最长前缀匹配**转发：按 bit 掩码匹配、TTL 递减与首部校验和重算。
+
+> 深度在：LPM 是按 **bit** 而非按字节匹配；且 `/0` 默认路由的掩码 `~0u << 32` 是移位 UB，必须特判——这正是 sanitizer 会当场抓住的点。
+> 锚点 — [`send_datagram`](src/network_interface.cc#L32) · [`recv_frame`](src/network_interface.cc#L75) · [`tick`](src/network_interface.cc#L134) · [`Router::route`](src/router.cc#L28) · [`add_route`](src/router.cc#L15)
+
+### 4. 端到端联调与逐包分析（capstone）
+
+把上面所有模块拼成完整端点 + 软件路由器，在单机仿真网络（IP-in-Ethernet-in-UDP 隧道，**虚拟 / 物理两层地址**）上重演 1969 ARPANET：UCLA ↔ Stanford 经一台路由器双向通信（含 UTF-8 中文）。能逐包解读运行流量——ARP request / reply、三次握手、ARP 缓存过期重发、四次挥手，并解释为何抓包里 `size=40` 的控制段分不出 SYN/FIN/ACK（标志位在 TCP 头、不占 payload）。
+
+> 从握手、数据到挥手，线上每个字段的含义与成因均可逐一解释。
+
+## 数据流路径 · Data Path
+
+一段应用字节，穿过我实现的各层（发送方向）：
+
+```text
+应用字节
+ └─ ByteStream（出站缓冲）                         src/byte_stream.*
+     └─ TCPSender 切段 + 贴序号 + 重传定时器          src/tcp_sender.*
+         └─ IP 封装（虚拟地址 src/dst）
+             └─ NetworkInterface 封以太网帧 + ARP 查 MAC  src/network_interface.*
+                 └─ Router 最长前缀匹配，选网卡转发       src/router.*
+                     └─（仿真网线：以太网帧经 UDP 在进程间传输）
+接收方向逆序解封：以太网帧 → IP 数据报 → TCP 段 → Reassembler 重组 → 入站 ByteStream → 应用读
+```
+
+## 效果演示 · Demo
+
+![单机三终端跑通端到端 TCP](docs/assets/check7-arpanet-demo.png)
+
+上图：三终端同时运行——**router（左上）转发帧流、client（右上）`successfully connected`、server（左下）收到 `LO` 与中文**。下面是 router 输出的注解节选——一条 TCP 连接从 ARP 到握手到传数据：
+
+```text
+DEBUG: adding route 50.0.0.0/8 => (direct) on interface 0          # 路由表（add_route）
+DEBUG: adding route 80.0.0.0/8 => (direct) on interface 1
+Ethernet frame from 32:e2:67… to ff:ff:ff:ff:ff:ff, type=2054, size=28   # 客户端广播 ARP 问网关 MAC
+Ethernet frame from 32:e2:67… to 02:00:00:91…,      type=2048, size=40   # SYN（握手①）
+Ethernet frame from ae:8c:aa… to 02:00:00:6f…,      type=2054, size=28   # 服务器回 ARP reply
+Ethernet frame from ae:8c:aa… to 02:00:00:6f…,      type=2048, size=40   # SYN-ACK（握手②）
+Ethernet frame from 32:e2:67… to 02:00:00:91…,      type=2048, size=43   # 携带 "LO" 数据（40+3）
+```
+
+client 端打印 `minnow successfully connected to 50.9.8.7:80`，随后双向收发数据（含 UTF-8 中文）。
+`type` 2054=ARP / 2048=IPv4；`size` 28=ARP、40=控制段、40+N=N 字节数据——每个字段都可解读。
+
+## 实现的模块 · Modules（`src/`，约 1k 行 C++）
 
 | 模块 | 文件 | 内容 |
 |---|---|---|
 | ByteStream | `byte_stream.*` | 有限容量的有序字节流（流量控制基础） |
 | Reassembler | `reassembler.*` | 乱序 / 重叠字节段重组为连续流 |
-| TCPReceiver | `tcp_receiver.*`, `wrapping_integers.*` | 32↔64 位序号回绕、ackno/window、喂 Reassembler |
-| TCPSender | `tcp_sender.*` | 滑动窗口、超时重传、SYN/FIN 序号管理 |
-| NetworkInterface | `network_interface.*` | IP 数据报 ⇄ 以太网帧、ARP 解析、缓存过期 |
+| TCPReceiver | `tcp_receiver.*`, `wrapping_integers.*` | 32↔64 位序号回绕、ackno / window、喂 Reassembler |
+| TCPSender | `tcp_sender.*` | 滑动窗口、超时重传（指数退避）、SYN/FIN 序号管理 |
+| NetworkInterface | `network_interface.*` | IP 数据报 ⇄ 以太网帧、ARP 解析与缓存过期 |
 | Router | `router.*` | 多网卡转发、最长前缀匹配（LPM） |
 
-## 端到端验证（capstone — 对前面实现的联调，非项目主体）
+## 关键设计决策 · Design Decisions
 
-> 项目主体是上面 **check0–6 的协议栈实现**；capstone 不写新算法，价值在于把它们**拼成完整系统、端到端跑通并验证**。
+| 设计点 | 做法 / 取舍理由 |
+|---|---|
+| 序号用 64 位 absolute seqno 中转 | 网络上 32 位 seqno 会回绕，内部统一 64 位无歧义坐标 + checkpoint 就近还原，避免歧义 |
+| Reassembler 用区间合并而非逐字节 | 重叠 / 乱序段合并为有序区间，复杂度随段数而非字节数 |
+| ARP 缓存 30s 过期 + pending 去重 | 平衡可达性与陈旧映射；未命中入队、已问不重复广播，best-effort |
+| LPM 按 bit 掩码匹配 + `/0` 特判 | `/N` 比最左 N bit；`~0u << 32` 是移位 UB，`/0` 特判为全 0 掩码 |
+| 链路层 best-effort + 上层重传兜底 | NetworkInterface 故意不保证送达，可靠性由 TCP 超时重传保证，两层闭环 |
 
-- **单机重演 1969 ARPANET**：UCLA(`80.6.5.4`) ↔ Stanford(`50.9.8.7`) 经一台软件路由器，双向传输数据（含 UTF-8 中文）。
-- **逐包可解读**：ARP request/reply、三次握手、缓存过期重发、四次挥手——这套逐包分析我可在面试中完整复现。
+## 工程与代码质量 · Engineering
 
-## 面试可深聊的点（覆盖全栈，体现深度而非"跑通测试"）
+- **现代 C++（C++20）**：`move` 语义在协议各层间转移数据报 / 以太网帧、避免拷贝；`std::optional` 表达"可空的下一跳"；**`std::erase_if`（C++20）** 安全清理过期 ARP 项（规避遍历中删除导致的迭代器失效）；辅以结构化绑定、`constexpr`。
+- **严格编译 + 无 UB**：全程 `-Werror -Wextra -Weffc++` 零警告通过；UBSan / ASan 下无未定义行为。
+- **测试驱动**：从单元测试反推并校验实现行为，各 checkpoint 测试全绿。
 
-**TCP / 可靠传输（项目核心）**
-- **超时重传定时器**怎么实现？为何超时翻倍（指数退避）、收到 ACK 后如何重置与重发？
-- **序号回绕**：32 位 seqno 与 64 位 absolute seqno 为何要互转？SYN/FIN 如何各占一个序号？
-- **Reassembler** 如何处理乱序 / 重叠 / 重复到达的字节段（区间合并）？为什么发送方不需要它、而每个端点又都需要它（全双工 + 收 ACK 驱动重传）？
+## 范围与边界 · Scope
 
-**网络 / 链路 / 路由**
-- 最长前缀匹配为什么**按 bit 比、不按字节**？`~0u << 32` 为何是 UB、怎么绕？
-- ARP 是 best-effort（问不到就丢包），可靠性靠什么兜底？（上层 TCP 重传，两层闭环）
+诚实定位：本项目是**基于 CS144 的协议栈实现**，目标是把协议机制写正确、并端到端跑通，非原创课程或框架。
 
-**capstone 联调**
-- 抓包里 `size=40` 为何分不出 SYN/FIN/ACK？两层 IP 地址（虚拟/物理）与 VPN 隧道有何相通？
+- **课程范围内（已完成）**：可靠传输、流重组、IP / ARP / 路由、端到端联调。各 checkpoint 测试全绿（check1 18/18、check2 30/30、check3 37/37、check5 / check6 全通过），sanitizer 下无 UB。
+- **有意止步处**：TCPSender 为 CS144 简化版（不含拥塞控制）；未做连接池 / 并发 / 吞吐优化——这些属课程之外的工程化方向，不在本项目目标内。
 
-> 以上每点我都能展开讲清原理、设计权衡与踩坑——欢迎面试深入追问。
-
-## 归属
+## 归属 · Credit
 
 - 协议设计与 starter code 版权归 **Stanford CS144（Keith Winstein）** — <https://cs144.github.io/>
 - 学习路线框架与初始仓库来自 **rinevard/NetworkDIY**（原学习路线 README 见 [README_NetworkDIY.md](./README_NetworkDIY.md)）。

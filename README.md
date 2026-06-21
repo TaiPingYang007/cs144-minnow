@@ -1,14 +1,20 @@
 # CS144 — TCP/IP 协议栈实现（C++）
 
-基于 **Stanford CS144** 从零实现的 TCP/IP 协议栈：可靠字节流、流重组、TCP 收发（滑动窗口 / 超时重传 / 序号回绕）、IP-over-Ethernet 网络接口（ARP）、最长前缀匹配路由，并在自建仿真网络（IP-in-Ethernet-in-UDP 隧道）上跑通**端到端 TCP 通信**——能逐包解读线上的 ARP、三次握手、重传与挥手。
+![C++](https://img.shields.io/badge/C%2B%2B-20-00599C?logo=cplusplus&logoColor=white)
+![Build](https://img.shields.io/badge/build-CMake-064F8C?logo=cmake&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-CTest%20passing-success)
+![Sanitizers](https://img.shields.io/badge/UBSan%20%2F%20ASan-clean-success)
+![Course](https://img.shields.io/badge/Stanford-CS144-8C1515)
 
-> This is my from-scratch implementation of a TCP/IP stack while studying Stanford CS144.
+从零用现代 C++ 实现一套 TCP/IP 协议栈，技术重点在 **TCP 可靠传输（滑动窗口 / 超时重传 / 序号回绕）、协议分层封装与解封、ARP 地址解析与最长前缀匹配路由**。约 1k 行核心实现（`src/`），并在自建仿真网络（IP-in-Ethernet-in-UDP 隧道）上跑通**端到端 TCP 通信**——能逐包解读线上的 ARP、三次握手、超时重传与四次挥手。
 
-- 📄 **实现说明与技术亮点 / Implementation & highlights** → [PORTFOLIO.md](./PORTFOLIO.md)
+> A from-scratch TCP/IP stack in modern C++, built while studying Stanford CS144.
 
-## 技术关键词
+📄 **实现细节、核心亮点与代码锚点** → [PORTFOLIO.md](./PORTFOLIO.md)
 
-TCP/IP · 可靠传输 · 滑动窗口 · 超时重传 · 序号回绕 · ARP · 最长前缀匹配路由 · IP-in-Ethernet-in-UDP 隧道（网络仿真 / overlay）· 现代 C++
+## 技术栈 · Tech Stack
+
+C++20 · CMake · CTest · UBSan / ASan · 协议序列化与字节序处理 ·（基于 Stanford CS144）
 
 ---
 
