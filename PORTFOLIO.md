@@ -17,30 +17,25 @@
 
 ### 1. TCP 可靠传输：滑动窗口 + 超时重传 + 序号回绕
 
-实现 TCP 发送端的滑动窗口与**超时重传定时器**：按对端通告窗口发送、累积确认推进窗口左沿；`tick` 累计时间触发最早未确认段重传，连续重传时**超时翻倍（指数退避）**，收到推进 ACK 后重置定时器与退避计数。序号在网络上是 32 位、会回绕，内部统一用 **64 位 absolute seqno** 作无歧义坐标，`wrap / unwrap` 借 checkpoint 就近还原。
+实现 TCP 发送端的滑动窗口与超时重传：按对端通告窗口发送、累积确认推进窗口左沿；`tick` 触发最早未确认段重传，连续超时**翻倍退避**，且**收到推进 ACK 才重置定时器与退避计数**（零窗口探测不计入退避）。序号在网络上是 32 位、会回绕，内部统一用 **64 位 absolute seqno** 作无歧义坐标、借 checkpoint 就近还原——其中**序号回绕与定时器边界**最易出现 off-by-one 与误重置。
 
-> 深度在：把"序号回绕 + 重传定时器"这类最容易写出 off-by-one 与误重置的地方做对了。
-> 锚点 — [`TCPSender::tick`](src/tcp_sender.cc#L101) · [`push`](src/tcp_sender.cc#L15) · [`receive`](src/tcp_sender.cc#L72) · [`Wrap32::wrap / unwrap`](src/wrapping_integers.cc#L6)
+代码：[`tick`](src/tcp_sender.cc#L101) · [`push`](src/tcp_sender.cc#L15) · [`receive`](src/tcp_sender.cc#L72) · [`Wrap32::wrap/unwrap`](src/wrapping_integers.cc#L6)
 
 ### 2. 字节流重组：乱序 / 重叠 / 重复 → 有序流
 
-`Reassembler` 把网络无序交付的字节段按 stream index **区间合并**为连续流：处理重叠裁剪、重复丢弃、容量边界与 EOF 标志，再推进入站字节流。
+`Reassembler` 把网络无序交付的字节段按 stream index **区间合并**为连续流：重叠裁剪、重复丢弃、容量边界与 EOF 标志，再推进入站字节流。难点集中在**重叠区间的裁剪与去重**——多一字节、少一字节都会破坏有序流的正确性。
 
-> 深度在：重叠区间的裁剪与去重边界——多一字节、少一字节都会破坏有序流的正确性。
-> 锚点 — [`Reassembler::insert`](src/reassembler.cc#L5) · [`TCPReceiver::receive`](src/tcp_receiver.cc#L5)
+代码：[`Reassembler::insert`](src/reassembler.cc#L5) · [`TCPReceiver::receive`](src/tcp_receiver.cc#L5)
 
 ### 3. 协议栈封装 + ARP + 最长前缀匹配路由
 
-`NetworkInterface` 在 IP 数据报与以太网帧间封装 / 解封，并实现 **ARP**：缓存命中直接发，未命中广播请求并将数据报入队待发，缓存 30s 过期、pending 请求去重，学到映射后冲刷队列。`Router` 实现**最长前缀匹配**转发：按 bit 掩码匹配、TTL 递减与首部校验和重算。
+`NetworkInterface` 在 IP 数据报与以太网帧间封装 / 解封并实现 **ARP**：缓存命中直发，未命中广播请求 + 数据报入队待发，缓存 30s 过期、pending 去重、学到映射后冲刷队列。`Router` 做**最长前缀匹配**转发，附带 TTL 递减与首部校验和重算。一个易错点：LPM 须按 **bit** 而非按字节匹配，且 `/0` 默认路由的掩码 `~0u << 32` 是移位 UB、必须特判——正是 sanitizer 会当场抓住的点。
 
-> 深度在：LPM 是按 **bit** 而非按字节匹配；且 `/0` 默认路由的掩码 `~0u << 32` 是移位 UB，必须特判——这正是 sanitizer 会当场抓住的点。
-> 锚点 — [`send_datagram`](src/network_interface.cc#L32) · [`recv_frame`](src/network_interface.cc#L75) · [`tick`](src/network_interface.cc#L134) · [`Router::route`](src/router.cc#L28) · [`add_route`](src/router.cc#L15)
+代码：[`send_datagram`](src/network_interface.cc#L32) · [`recv_frame`](src/network_interface.cc#L75) · [`tick`](src/network_interface.cc#L134) · [`Router::route`](src/router.cc#L28) · [`add_route`](src/router.cc#L15)
 
 ### 4. 端到端联调与逐包分析（capstone）
 
-把上面所有模块拼成完整端点 + 软件路由器，在单机仿真网络（IP-in-Ethernet-in-UDP 隧道，**虚拟 / 物理两层地址**）上重演 1969 ARPANET：UCLA ↔ Stanford 经一台路由器双向通信（含 UTF-8 中文）。能逐包解读运行流量——ARP request / reply、三次握手、ARP 缓存过期重发、四次挥手，并解释为何抓包里 `size=40` 的控制段分不出 SYN/FIN/ACK（标志位在 TCP 头、不占 payload）。
-
-> 从握手、数据到挥手，线上每个字段的含义与成因均可逐一解释。
+把上面所有模块拼成完整端点 + 软件路由器，在单机仿真网络（IP-in-Ethernet-in-UDP 隧道，**虚拟 / 物理两层地址**）上重演 1969 ARPANET：UCLA ↔ Stanford 经一台路由器双向通信（含 UTF-8 中文）。运行时可逐包解读线上流量——ARP request / reply、三次握手、缓存过期重发、四次挥手；其中 `size=40` 的控制段在抓包里分不出 SYN/FIN/ACK，是因为这些标志位在 TCP 头、不占 payload。
 
 ## 数据流路径 · Data Path
 
