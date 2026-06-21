@@ -17,7 +17,17 @@
 - check7 Capstone：已完成单机版（2026-06-21）；`make check7` 编译 4 app 全过，3 终端 ARPANET 跑通，UCLA(80.6.5.4)↔Stanford(50.9.8.7) 经 fun_router 双向传数据；笔记见 `notes/check7-capstone.md`
 - **CS144 lab check0→7 实质全部通关 🏁**；可选未做：something creative(§8)、三人版/更大 Internet（无同学，跳过）
 
-当前学习入口仍是 **check5: NetworkInterface**。✅ 后续 starter 框架已补齐到可学习状态（2026-06-20）：check5 `NetworkInterface` 和 check6 `Router` 都已恢复到原始目录；check7/capstone 相关 app/support 也已恢复并可编译。`NetworkInterface` 与 `Router` 都保持 unimplemented 桩，没有混入解答。验证结果：`make check3` 回归全绿；`make check5` 运行到 `net_interface` 后因 `unimplemented send_datagram` 正确失败；`make check6` 编译通过后被前置 `net_interface` 未实现拦住。
+**当前状态（2026-06-22）：CS144 lab check0→7 全部完成，进入复习 + 面试准备阶段。** check7 笔记 `notes/check7-capstone.md` 已完整 review 定稿（含一页速查 + 一条连接完整一生的逐包 DEBUG 解读）。下一步重心：把本项目作为简历项目（诚实定位为「基于 CS144 的实现」，不包装成原创），并整理 README 归属。
+
+## 来源与归属（写简历 / README 时引用）
+
+- **原作者 / 版权**：Stanford CS144（Keith Winstein）。课程框架、starter code、原 README 正文均归原作者。
+- **starter 来源（两处，均非独立原创作者，根本都是 CS144）**：
+  - check0/1 + 初始框架 + 现有 `README.md`/`README_en.md`：`rinevard/NetworkDIY`（git `upstream` remote），最早 commit `ddc2b6c`（2026-05-12）整体导入；它本身也是 CS144 学习仓。
+  - check3/5/6/7 starter：近官方镜像 `Richard-Qin-X/minnow` 的 Keith Winstein 历史 commit；各 checkpoint commit 见下方「Checkpoint starter 文件导入策略」。
+  - ⚠️ 现有 README 严格说来自上游 `rinevard/NetworkDIY`，归属时表述为「初始框架与本 README 来自上游 rinevard/NetworkDIY，根本基于 Stanford CS144（Keith Winstein）」。
+- **本人贡献**：`src/` 下各模块实现（ByteStream / Reassembler / TCPReceiver / TCPSender / NetworkInterface / Router）+ `notes/` 学习笔记。
+- **态度与做法**：仓库长期公开、仅作学习，无意主张对课程材料的任何权利，尊重原作者「让更多人学习」的初衷。README 处理：**保留原作者正文，仅在顶部加「个人说明」block**（声明归属 + 指向 `src/` 与 `notes/`），不删不改正文。
 
 ## 关键文件
 

@@ -1,7 +1,7 @@
 NetworkDIY
 ==============================
 
-[中文说明 (Chinese Version)](./README.md)
+[中文说明 (Chinese Version)](./README_NetworkDIY.md)
 
 This is a hybrid learning roadmap combining CS144 and CS168. CS168 has made its latest digital textbook and lecture videos publicly available, featuring a humorous and engaging instructor. Meanwhile, CS144 offers assignments based on modern C++. Therefore, this roadmap satisfies the needs for learning both Computer Networks and modern C++ simultaneously.
 
